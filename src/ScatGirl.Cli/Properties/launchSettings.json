@@ -2,103 +2,103 @@
   "profiles": {
     "find: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "find C:/code/ScatGirl SyntaxNavigator"
+      "commandLineArgs": "find ../../../../.. SyntaxNavigator"
     },
     "find: FileScanner": {
       "commandName": "Project",
-      "commandLineArgs": "find C:/code/ScatGirl FileScanner"
+      "commandLineArgs": "find ../../../../.. FileScanner"
     },
     "find: SymbolReference": {
       "commandName": "Project",
-      "commandLineArgs": "find C:/code/ScatGirl SymbolReference"
+      "commandLineArgs": "find ../../../../.. SymbolReference"
     },
     "find --kind method: FindDeclarations": {
       "commandName": "Project",
-      "commandLineArgs": "find C:/code/ScatGirl FindDeclarations --kind method"
+      "commandLineArgs": "find ../../../../.. FindDeclarations --kind method"
     },
     "find --kind class: [all classes]": {
       "commandName": "Project",
-      "commandLineArgs": "find C:/code/ScatGirl Walker --kind class"
+      "commandLineArgs": "find ../../../../.. Walker --kind class"
     },
     "find [json]: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "find C:/code/ScatGirl SyntaxNavigator --json"
+      "commandLineArgs": "find ../../../../.. SyntaxNavigator --json"
     },
     "refs: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator"
+      "commandLineArgs": "refs ../../../../.. SyntaxNavigator"
     },
     "refs: FindDeclarations": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl FindDeclarations"
+      "commandLineArgs": "refs ../../../../.. FindDeclarations"
     },
     "refs --kind typeof: SymbolReference": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SymbolReference --kind typeof"
+      "commandLineArgs": "refs ../../../../.. SymbolReference --kind typeof"
     },
     "refs --kind nameof: SymbolReference": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SymbolReference --kind nameof"
+      "commandLineArgs": "refs ../../../../.. SymbolReference --kind nameof"
     },
     "refs --in-file: SyntaxNavigator in Core": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --in-file **/ScatGirl.Core/**"
+      "commandLineArgs": "refs ../../../../.. SyntaxNavigator --in-file **/ScatGirl.Core/**"
     },
     "refs --in-file: SyntaxNavigator in Tools only": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --in-file **/*Tools.cs"
+      "commandLineArgs": "refs ../../../../.. SyntaxNavigator --in-file **/*Tools.cs"
     },
     "refs [json]: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --json"
+      "commandLineArgs": "refs ../../../../.. SyntaxNavigator --json"
     },
     "refs --kind implementation: CSharpSyntaxWalker": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl CSharpSyntaxWalker --kind implementation"
+      "commandLineArgs": "refs ../../../../.. CSharpSyntaxWalker --kind implementation"
     },
     "refs --kind invocation: FindDeclarations": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl FindDeclarations --kind invocation"
+      "commandLineArgs": "refs ../../../../.. FindDeclarations --kind invocation"
     },
     "refs --kind object-creation: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --kind object-creation"
+      "commandLineArgs": "refs ../../../../.. SyntaxNavigator --kind object-creation"
     },
     "refs --kind type-argument: SymbolDeclaration": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl SymbolDeclaration --kind type-argument"
+      "commandLineArgs": "refs ../../../../.. SymbolDeclaration --kind type-argument"
     },
     "refs: [not found] IUserService": {
       "commandName": "Project",
-      "commandLineArgs": "refs C:/code/ScatGirl IUserService"
+      "commandLineArgs": "refs ../../../../.. IUserService"
     },
     "members: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator"
+      "commandLineArgs": "members ../../../../.. SyntaxNavigator"
     },
     "members: MemberWalker": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl MemberWalker"
+      "commandLineArgs": "members ../../../../.. MemberWalker"
     },
     "members --kind method: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator --kind method"
+      "commandLineArgs": "members ../../../../.. SyntaxNavigator --kind method"
     },
     "members --kind field: MemberWalker": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl MemberWalker --kind field"
+      "commandLineArgs": "members ../../../../.. MemberWalker --kind field"
     },
     "members --in-file: SyntaxNavigator in Core": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator --in-file **/ScatGirl.Core/**"
+      "commandLineArgs": "members ../../../../.. SyntaxNavigator --in-file **/ScatGirl.Core/**"
     },
     "members [json]: SyntaxNavigator": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator --json"
+      "commandLineArgs": "members ../../../../.. SyntaxNavigator --json"
     },
     "members: [not found] IUserService": {
       "commandName": "Project",
-      "commandLineArgs": "members C:/code/ScatGirl IUserService"
+      "commandLineArgs": "members ../../../../.. IUserService"
     }
   }
 }

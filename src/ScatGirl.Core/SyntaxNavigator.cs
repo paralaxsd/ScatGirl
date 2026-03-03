@@ -221,6 +221,9 @@ sealed class MemberWalker(string typeName, string? kind) : CSharpSyntaxWalker
                     foreach (var v in ef.Declaration.Variables)
                         TryAdd(v, "event", EventFieldSig(ef, v));
                     break;
+                case ExtensionBlockDeclarationSyntax ebs:
+                    TryAdd(ebs, "extension", ExtensionBlockSig(ebs));
+                    break;
             }
         }
     }
@@ -293,6 +296,9 @@ sealed class MemberWalker(string typeName, string? kind) : CSharpSyntaxWalker
 
     static string EventFieldSig(EventFieldDeclarationSyntax ef, VariableDeclaratorSyntax v) =>
         Normalize($"{Mods(ef.Modifiers)}event {ef.Declaration.Type} {v.Identifier.Text}");
+
+    static string ExtensionBlockSig(ExtensionBlockDeclarationSyntax ebs) =>
+        Normalize($"{Mods(ebs.Modifiers)}extension{ebs.ParameterList}");
 }
 
 sealed class ReferenceWalker(string symbolName, string? kindFilter) : CSharpSyntaxWalker
