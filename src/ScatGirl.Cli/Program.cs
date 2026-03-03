@@ -23,6 +23,9 @@ app.Configure(config =>
         .WithExample(["members", ".", "AudioCaptureService"])
         .WithExample(["members", ".", "AudioCaptureService", "--kind", "method"])
         .WithExample(["members", ".", "SyntaxNavigator", "--in-file", "**/ScatGirl.Core/**"]);
+
+    config.AddCommand<MetaCommand>("meta")
+        .WithDescription("Show metadata about the ScatGirl CLI tool, including version and build information.");
 });
 
 return app.Run(args);

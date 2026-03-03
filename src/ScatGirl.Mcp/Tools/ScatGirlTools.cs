@@ -1,7 +1,11 @@
-using System.ComponentModel;
-using System.Text.Json;
+using Microsoft.CodeAnalysis;
+using Microsoft.VisualBasic;
+using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using ScatGirl.Core;
+using System.ComponentModel;
+using System.Text.Json;
+using System.Globalization;
 
 namespace ScatGirl.Mcp.Tools;
 
@@ -132,6 +136,12 @@ static class ScatGirlTools
             })
         });
     }
+
+
+    [McpServerTool(Name = "meta")]
+    [Description(
+        "Show metadata about the ScatGirl MCP tool, including version and build information.")]
+    static string Meta() => Serialize(MetaInfoFactory.Create());
 
     static string Serialize(object value) => JsonSerializer.Serialize(value, JsonOptions);
 
