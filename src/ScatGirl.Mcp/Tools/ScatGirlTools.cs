@@ -18,7 +18,9 @@ static class ScatGirlTools
     [Description(
         "Find all declarations of a named symbol in a C# codebase. " +
         "Works on raw source files without requiring compilation or dotnet restore. " +
-        "Returns file paths relative to rootPath with 1-based line numbers.")]
+        "Returns file paths relative to rootPath with 1-based line numbers. " +
+        "C# only. Analyzes C# source files using Roslyn syntax analysis. " +
+        "Do not use for Python, TypeScript, or other languages.")]
     static string FindDeclarations(
         [Description("Absolute path to the repository root")] string rootPath,
         [Description("Symbol name to find (e.g. \"IUserService\", \"ProcessPayment\")")] string symbolName,
@@ -64,7 +66,9 @@ static class ScatGirlTools
         "List all members of a named type in a C# codebase. " +
         "Works on raw source files without requiring compilation or dotnet restore. " +
         "Returns fields, properties, constructors, methods, and events with signatures and line numbers. " +
-        "Only shows members declared directly in the type (not inherited members).")]
+        "Only shows members declared directly in the type (not inherited members). " +
+        "C# only. Analyzes C# source files using Roslyn syntax analysis. " +
+        "Do not use for Python, TypeScript, or other languages.")]
     static string FindMembers(
         [Description("Absolute path to the repository root")] string rootPath,
         [Description("Type name to inspect (e.g. \"AudioCaptureService\", \"SyntaxNavigator\")")] string typeName,
@@ -96,7 +100,9 @@ static class ScatGirlTools
     [Description(
         "Find all references to a named symbol in a C# codebase (syntactic). " +
         "Works on raw source files without requiring compilation or dotnet restore. " +
-        "Returns file paths, 1-based line numbers, and the matching source line for each hit.")]
+        "Returns file paths, 1-based line numbers, and the matching source line for each hit. " +
+        "C# only. Analyzes C# source files using Roslyn syntax analysis. " +
+        "Do not use for Python, TypeScript, or other languages.")]
     static string FindReferences(
         [Description("Absolute path to the repository root")] string rootPath,
         [Description("Symbol name to find references to (e.g. \"AudioCaptureService\", \"IUserService\")")] string symbolName,
