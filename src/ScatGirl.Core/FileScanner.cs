@@ -19,8 +19,11 @@ static class FileScanner
         var regex   = GlobToRegex(globFilter);
 
         return Enumerate(rootPath)
-            .Where(f => regex.IsMatch(
-                Path.GetRelativePath(absRoot, f).Replace('\\', '/')));
+            .Where(f =>
+            {
+                var relPath = Path.GetRelativePath(absRoot, f).Replace('\\', '/');
+                return regex.IsMatch(relPath);
+            });
     }
 
     static IEnumerable<string> Enumerate(string directory)
@@ -40,11 +43,15 @@ static class FileScanner
 
     static Regex GlobToRegex(string glob)
     {
-        var pattern = "^" + Regex.Escape(glob.Replace('\\', '/'))
+        var escGlob = Regex.Escape(glob.Replace('\\', '/'))
             .Replace(@"\*\*", ".*")
             .Replace(@"\*", "[^/]*")
-            .Replace(@"\?", ".") + "$";
-
-        return new Regex(pattern, RegexOptions.IgnoreCase);
+            .Replace(@"\?", ".");
+        // If our pattern matches against .*/, we have to make it optional as
+        // paths may or may not start with ./
+        if (escGlob.StartsWith(".*/"))
+            escGlob = "(?:.*/)?" + escGlob[3..];
+        var pattern = "^" + escGlob + "$";
+        return new(pattern, RegexOptions.IgnoreCase);
     }
 }

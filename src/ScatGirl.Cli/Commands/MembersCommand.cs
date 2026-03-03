@@ -1,9 +1,9 @@
-using System.ComponentModel;
-using System.Text.Json;
-using ScatGirl.Cli;
 using ScatGirl.Core;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
+using System.Text.Json;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace ScatGirl.Cli.Commands;
 
@@ -31,8 +31,14 @@ sealed class MembersCommand : Command<MembersCommand.Settings>
         var members = new SyntaxNavigator().FindMembers(
             settings.Root, settings.Symbol, settings.Kind, settings.InFile);
 
-        if (settings.Json) PrintJson(members, settings);
-        else PrintFormatted(members, settings);
+        if (settings.Json)
+        {
+            PrintJson(members, settings);
+        }
+        else
+        {
+            PrintFormatted(members, settings);
+        }
 
         return 0;
     }
