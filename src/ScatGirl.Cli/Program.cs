@@ -17,6 +17,12 @@ app.Configure(config =>
         .WithExample(["refs", ".", "AudioCaptureService"])
         .WithExample(["refs", ".", "IMonitoringStateService", "--kind", "identifier"])
         .WithExample(["refs", ".", "NoiseDetector", "--in-file", "**/*Service.cs"]);
+
+    config.AddCommand<MembersCommand>("members")
+        .WithDescription("List all members of a type declared in a C# codebase.")
+        .WithExample(["members", ".", "AudioCaptureService"])
+        .WithExample(["members", ".", "AudioCaptureService", "--kind", "method"])
+        .WithExample(["members", ".", "SyntaxNavigator", "--in-file", "**/ScatGirl.Core/**"]);
 });
 
 return app.Run(args);

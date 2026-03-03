@@ -30,6 +30,30 @@ public sealed class SyntaxNavigator
         return results;
     }
 
+    public IReadOnlyList<TypeMember> FindMembers(
+        string rootPath, string typeName, string? kind = null, string? globFilter = null)
+    {
+        var results = new List<TypeMember>();
+        var absRoot = Path.GetFullPath(rootPath);
+
+        foreach (var filePath in FileScanner.GetCSharpFiles(rootPath, globFilter))
+        {
+            var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(filePath));
+
+            var walker = new MemberWalker(typeName, kind);
+            walker.Visit(tree.GetRoot());
+
+            var relPath = Path.GetRelativePath(absRoot, filePath).Replace('\\', '/');
+            foreach (var (node, memberKind, signature) in walker.Hits)
+            {
+                var line = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
+                results.Add(new(memberKind, signature, new(relPath, line)));
+            }
+        }
+
+        return results;
+    }
+
     public IReadOnlyList<SymbolReference> FindReferences(
         string rootPath, string symbolName, string? kind = null, string? globFilter = null)
     {
@@ -162,6 +186,113 @@ sealed class DeclarationWalker(string symbolName, string? kind) : CSharpSyntaxWa
             TryAdd(variable, "event", variable.Identifier.Text);
         base.VisitEventFieldDeclaration(node);
     }
+}
+
+sealed class MemberWalker(string typeName, string? kind) : CSharpSyntaxWalker
+{
+    internal readonly List<(SyntaxNode Node, string Kind, string Signature)> Hits = [];
+
+    void VisitTypeBody(SyntaxList<MemberDeclarationSyntax> members)
+    {
+        foreach (var member in members)
+        {
+            switch (member)
+            {
+                case MethodDeclarationSyntax m:
+                    TryAdd(m, "method", MethodSig(m));
+                    break;
+                case ConstructorDeclarationSyntax c:
+                    TryAdd(c, "constructor", CtorSig(c));
+                    break;
+                case PropertyDeclarationSyntax p:
+                    TryAdd(p, "property", PropertySig(p));
+                    break;
+                case IndexerDeclarationSyntax ix:
+                    TryAdd(ix, "property", IndexerSig(ix));
+                    break;
+                case FieldDeclarationSyntax f:
+                    foreach (var v in f.Declaration.Variables)
+                        TryAdd(v, "field", FieldSig(f, v));
+                    break;
+                case EventDeclarationSyntax e:
+                    TryAdd(e, "event", EventSig(e));
+                    break;
+                case EventFieldDeclarationSyntax ef:
+                    foreach (var v in ef.Declaration.Variables)
+                        TryAdd(v, "event", EventFieldSig(ef, v));
+                    break;
+            }
+        }
+    }
+
+    void TryAdd(SyntaxNode node, string memberKind, string signature)
+    {
+        if (kind is not null && !string.Equals(memberKind, kind, StringComparison.OrdinalIgnoreCase))
+            return;
+        Hits.Add((node, memberKind, signature));
+    }
+
+    public override void VisitClassDeclaration(ClassDeclarationSyntax node)
+    {
+        if (node.Identifier.Text == typeName) VisitTypeBody(node.Members);
+        else base.VisitClassDeclaration(node);
+    }
+
+    public override void VisitRecordDeclaration(RecordDeclarationSyntax node)
+    {
+        if (node.Identifier.Text == typeName) VisitTypeBody(node.Members);
+        else base.VisitRecordDeclaration(node);
+    }
+
+    public override void VisitStructDeclaration(StructDeclarationSyntax node)
+    {
+        if (node.Identifier.Text == typeName) VisitTypeBody(node.Members);
+        else base.VisitStructDeclaration(node);
+    }
+
+    public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
+    {
+        if (node.Identifier.Text == typeName) VisitTypeBody(node.Members);
+        else base.VisitInterfaceDeclaration(node);
+    }
+
+    static string Normalize(string s) =>
+        string.Join(" ", s.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+
+    static string Mods(SyntaxTokenList modifiers) =>
+        modifiers.Any() ? string.Join(" ", modifiers) + " " : "";
+
+    static string AccessorSummary(AccessorListSyntax? list)
+    {
+        if (list is null) return "";
+        var parts = list.Accessors.Select(a =>
+        {
+            var mods = a.Modifiers.Any() ? string.Join(" ", a.Modifiers) + " " : "";
+            return mods + a.Keyword.Text + ";";
+        });
+        return "{ " + string.Join(" ", parts) + " }";
+    }
+
+    static string MethodSig(MethodDeclarationSyntax m) =>
+        Normalize($"{Mods(m.Modifiers)}{m.ReturnType} {m.Identifier.Text}{m.TypeParameterList}{m.ParameterList}");
+
+    static string CtorSig(ConstructorDeclarationSyntax c) =>
+        Normalize($"{Mods(c.Modifiers)}{c.Identifier.Text}{c.ParameterList}");
+
+    static string PropertySig(PropertyDeclarationSyntax p) =>
+        Normalize($"{Mods(p.Modifiers)}{p.Type} {p.Identifier.Text} {AccessorSummary(p.AccessorList)}");
+
+    static string IndexerSig(IndexerDeclarationSyntax ix) =>
+        Normalize($"{Mods(ix.Modifiers)}{ix.Type} this{ix.ParameterList} {AccessorSummary(ix.AccessorList)}");
+
+    static string FieldSig(FieldDeclarationSyntax f, VariableDeclaratorSyntax v) =>
+        Normalize($"{Mods(f.Modifiers)}{f.Declaration.Type} {v.Identifier.Text}");
+
+    static string EventSig(EventDeclarationSyntax e) =>
+        Normalize($"{Mods(e.Modifiers)}event {e.Type} {e.Identifier.Text}");
+
+    static string EventFieldSig(EventFieldDeclarationSyntax ef, VariableDeclaratorSyntax v) =>
+        Normalize($"{Mods(ef.Modifiers)}event {ef.Declaration.Type} {v.Identifier.Text}");
 }
 
 sealed class ReferenceWalker(string symbolName, string? kindFilter) : CSharpSyntaxWalker

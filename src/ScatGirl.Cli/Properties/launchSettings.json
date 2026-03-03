@@ -55,6 +55,34 @@
     "refs: [not found] IUserService": {
       "commandName": "Project",
       "commandLineArgs": "refs C:/code/ScatGirl IUserService"
+    },
+    "members: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator"
+    },
+    "members: MemberWalker": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl MemberWalker"
+    },
+    "members --kind method: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator --kind method"
+    },
+    "members --kind field: MemberWalker": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl MemberWalker --kind field"
+    },
+    "members --in-file: SyntaxNavigator in Core": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator --in-file **/ScatGirl.Core/**"
+    },
+    "members [json]: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl SyntaxNavigator --json"
+    },
+    "members: [not found] IUserService": {
+      "commandName": "Project",
+      "commandLineArgs": "members C:/code/ScatGirl IUserService"
     }
   }
 }

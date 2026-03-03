@@ -46,6 +46,39 @@ static class ScatGirlTools
         });
     }
 
+    [McpServerTool(Name = "find_members")]
+    [Description(
+        "List all members of a named type in a C# codebase. " +
+        "Works on raw source files without requiring compilation or dotnet restore. " +
+        "Returns fields, properties, constructors, methods, and events with signatures and line numbers. " +
+        "Only shows members declared directly in the type (not inherited members).")]
+    static string FindMembers(
+        [Description("Absolute path to the repository root")] string rootPath,
+        [Description("Type name to inspect (e.g. \"AudioCaptureService\", \"SyntaxNavigator\")")] string typeName,
+        [Description("Optional member kind filter: method, property, field, constructor, event")] string? kind = null,
+        [Description("Optional glob pattern to restrict search (e.g. \"**/*Service.cs\")")] string? inFile = null)
+    {
+        IReadOnlyList<TypeMember> members;
+        try { members = new SyntaxNavigator().FindMembers(rootPath, typeName, kind, inFile); }
+        catch (Exception ex) { return Error(ex.Message); }
+
+        return Serialize(new
+        {
+            root     = rootPath,
+            typeName,
+            kind,
+            inFile,
+            count    = members.Count,
+            members  = members.Select(m => new
+            {
+                m.Kind,
+                m.Signature,
+                filePath = m.Location.FilePath,
+                line     = m.Location.Line
+            })
+        });
+    }
+
     [McpServerTool(Name = "find_references")]
     [Description(
         "Find all references to a named symbol in a C# codebase (syntactic). " +

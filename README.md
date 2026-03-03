@@ -1,4 +1,5 @@
 # ScatGirl [![ci](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml/badge.svg)](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml) [![CLI NuGet](https://img.shields.io/nuget/v/ScatGirl.Cli.svg?color=blue)](https://www.nuget.org/packages/ScatGirl.Cli) [![MCP NuGet](https://img.shields.io/nuget/v/ScatGirl.Mcp.svg?color=blue)](https://www.nuget.org/packages/ScatGirl.Mcp)
+![ScatGirl logo](https://raw.githubusercontent.com/paralaxsd/ScatGirl/main/images/logo.png)
 
 > *Improvising over unfamiliar codebases since 2026.*
 
@@ -68,6 +69,34 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 **kind** filter (optional): `identifier` `typeof` `nameof` `attribute`
 **inFile** (optional): glob pattern, e.g. `**/*Service.cs`
 
+### `find_members`
+List all members declared directly in a named type — fields, properties, constructors, methods, and events. Only own members are shown (no inherited members).
+
+```json
+{
+  "rootPath": "C:/projects/MyApp",
+  "typeName": "AudioCaptureService",
+  "kind": "method"
+}
+```
+
+```json
+{
+  "root": "C:/projects/MyApp",
+  "typeName": "AudioCaptureService",
+  "count": 2,
+  "members": [
+    { "kind": "method", "signature": "public Task StartAsync(CancellationToken ct)",
+      "filePath": "src/AudioCaptureService.cs", "line": 45 },
+    { "kind": "method", "signature": "public Task StopAsync(CancellationToken ct)",
+      "filePath": "src/AudioCaptureService.cs", "line": 67 }
+  ]
+}
+```
+
+**kind** filter (optional): `field` `property` `constructor` `method` `event`
+**inFile** (optional): glob pattern — useful when the type name is ambiguous across namespaces
+
 ## Setup
 
 ```bash
@@ -86,4 +115,9 @@ scatgirl refs . AudioCaptureService
 scatgirl refs . IMonitoringStateService --kind identifier
 scatgirl refs . NoiseDetector --in-file "**/*Service.cs"
 scatgirl refs . AppJsonSerializerContext --json
+
+scatgirl members . AudioCaptureService
+scatgirl members . AudioCaptureService --kind method
+scatgirl members . SyntaxNavigator --in-file "**/ScatGirl.Core/**"
+scatgirl members . SyntaxNavigator --json
 ```
