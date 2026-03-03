@@ -38,6 +38,36 @@ Find all declarations of a named symbol across a C# codebase.
 
 **kind** filter (optional): `class` `interface` `record` `struct` `enum` `delegate` `method` `constructor` `property` `field` `event`
 
+### `find_references`
+Find all references to a named symbol across a C# codebase. Returns file, line, and the matching source line for each hit. Results are tagged `[syntactic]` — no compilation required, name-based matching.
+
+```json
+{
+  "rootPath": "C:/projects/MyApp",
+  "symbolName": "AudioCaptureService",
+  "kind": "identifier",
+  "inFile": "**/*Service.cs"
+}
+```
+
+```json
+{
+  "root": "C:/projects/MyApp",
+  "symbolName": "AudioCaptureService",
+  "analysis": "syntactic",
+  "count": 2,
+  "references": [
+    { "filePath": "src/Program.cs", "line": 38,
+      "lineText": "builder.Services.AddHostedService<AudioCaptureService>();", "kind": "identifier" },
+    { "filePath": "src/AudioCaptureService.cs", "line": 12,
+      "lineText": "sealed class AudioCaptureService : IHostedService", "kind": "identifier" }
+  ]
+}
+```
+
+**kind** filter (optional): `identifier` `typeof` `nameof` `attribute`
+**inFile** (optional): glob pattern, e.g. `**/*Service.cs`
+
 ## Setup
 
 ```bash
@@ -51,5 +81,9 @@ claude mcp add scatgirl-mcp --scope user -- dotnet scatgirl-mcp
 dotnet tool install --global ScatGirl.Cli
 scatgirl find . IUserService
 scatgirl find . ProcessPayment --kind method
-scatgirl find . ProcessPayment --kind method --json
+
+scatgirl refs . AudioCaptureService
+scatgirl refs . IMonitoringStateService --kind identifier
+scatgirl refs . NoiseDetector --in-file "**/*Service.cs"
+scatgirl refs . AppJsonSerializerContext --json
 ```
