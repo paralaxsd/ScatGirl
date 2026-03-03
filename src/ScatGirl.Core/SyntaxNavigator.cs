@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -13,8 +14,7 @@ public sealed class SyntaxNavigator
 
         foreach (var filePath in FileScanner.GetCSharpFiles(rootPath))
         {
-            var source = File.ReadAllText(filePath);
-            var tree = CSharpSyntaxTree.ParseText(source);
+            var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(filePath));
 
             var walker = new DeclarationWalker(symbolName, kind);
             walker.Visit(tree.GetRoot());
@@ -29,13 +29,40 @@ public sealed class SyntaxNavigator
 
         return results;
     }
+
+    public IReadOnlyList<SymbolReference> FindReferences(
+        string rootPath, string symbolName, string? kind = null, string? globFilter = null)
+    {
+        var results = new List<SymbolReference>();
+        var absRoot = Path.GetFullPath(rootPath);
+
+        foreach (var filePath in FileScanner.GetCSharpFiles(rootPath, globFilter))
+        {
+            var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(filePath));
+
+            var walker = new ReferenceWalker(symbolName, kind);
+            walker.Visit(tree.GetRoot());
+
+            var relPath = Path.GetRelativePath(absRoot, filePath).Replace('\\', '/');
+            var lines   = tree.GetText().Lines;
+
+            foreach (var (node, refKind) in walker.Hits)
+            {
+                var lineIndex = node.GetLocation().GetLineSpan().StartLinePosition.Line;
+                var lineText  = lines[lineIndex].ToString().Trim();
+                results.Add(new(relPath, lineIndex + 1, lineText, refKind));
+            }
+        }
+
+        return results;
+    }
 }
 
 sealed class DeclarationWalker(string symbolName, string? kind) : CSharpSyntaxWalker
 {
-    internal readonly List<(Microsoft.CodeAnalysis.SyntaxNode Node, string Kind, string? ContainingType)> Hits = [];
+    internal readonly List<(SyntaxNode Node, string Kind, string? ContainingType)> Hits = [];
 
-    void TryAdd(Microsoft.CodeAnalysis.SyntaxNode locationNode, string decKind, string name)
+    void TryAdd(SyntaxNode locationNode, string decKind, string name)
     {
         if (name != symbolName) return;
         if (kind is not null && !string.Equals(decKind, kind, StringComparison.OrdinalIgnoreCase)) return;
@@ -43,7 +70,7 @@ sealed class DeclarationWalker(string symbolName, string? kind) : CSharpSyntaxWa
         Hits.Add((locationNode, decKind, GetContainingType(locationNode)));
     }
 
-    static string? GetContainingType(Microsoft.CodeAnalysis.SyntaxNode node)
+    static string? GetContainingType(SyntaxNode node)
     {
         var parent = node.Parent;
         while (parent is not null)
@@ -135,4 +162,38 @@ sealed class DeclarationWalker(string symbolName, string? kind) : CSharpSyntaxWa
             TryAdd(variable, "event", variable.Identifier.Text);
         base.VisitEventFieldDeclaration(node);
     }
+}
+
+sealed class ReferenceWalker(string symbolName, string? kindFilter) : CSharpSyntaxWalker
+{
+    internal readonly List<(SyntaxNode Node, string Kind)> Hits = [];
+
+    public override void VisitIdentifierName(IdentifierNameSyntax node)
+    {
+        if (node.Identifier.Text == symbolName)
+        {
+            var kind = ClassifyKind(node);
+            if (kindFilter is null || string.Equals(kind, kindFilter, StringComparison.OrdinalIgnoreCase))
+                Hits.Add((node, kind));
+        }
+        base.VisitIdentifierName(node);
+    }
+
+    static string ClassifyKind(IdentifierNameSyntax node) => node.Parent switch
+    {
+        TypeOfExpressionSyntax                          => "typeof",
+        AttributeSyntax                                 => "attribute",
+        QualifiedNameSyntax { Parent: AttributeSyntax } => "attribute",
+        ArgumentSyntax arg when IsNameofArg(arg)        => "nameof",
+        _                                               => "identifier"
+    };
+
+    static bool IsNameofArg(ArgumentSyntax arg) =>
+        arg.Parent is ArgumentListSyntax
+        {
+            Parent: InvocationExpressionSyntax
+            {
+                Expression: IdentifierNameSyntax { Identifier.Text: "nameof" }
+            }
+        };
 }

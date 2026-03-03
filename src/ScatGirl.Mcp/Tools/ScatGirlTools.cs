@@ -46,6 +46,39 @@ static class ScatGirlTools
         });
     }
 
+    [McpServerTool(Name = "find_references")]
+    [Description(
+        "Find all references to a named symbol in a C# codebase (syntactic). " +
+        "Works on raw source files without requiring compilation or dotnet restore. " +
+        "Returns file paths, 1-based line numbers, and the matching source line for each hit.")]
+    static string FindReferences(
+        [Description("Absolute path to the repository root")] string rootPath,
+        [Description("Symbol name to find references to (e.g. \"AudioCaptureService\", \"IUserService\")")] string symbolName,
+        [Description("Optional kind filter: identifier, typeof, nameof, attribute")] string? kind = null,
+        [Description("Optional glob pattern to restrict search (e.g. \"**/*Service.cs\")")] string? inFile = null)
+    {
+        IReadOnlyList<SymbolReference> refs;
+        try { refs = new SyntaxNavigator().FindReferences(rootPath, symbolName, kind, inFile); }
+        catch (Exception ex) { return Error(ex.Message); }
+
+        return Serialize(new
+        {
+            root       = rootPath,
+            symbolName,
+            kind,
+            inFile,
+            analysis   = "syntactic",
+            count      = refs.Count,
+            references = refs.Select(r => new
+            {
+                r.FilePath,
+                r.Line,
+                r.LineText,
+                r.Kind
+            })
+        });
+    }
+
     static string Serialize(object value) => JsonSerializer.Serialize(value, JsonOptions);
 
     static string Error(string message) =>

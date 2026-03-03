@@ -1,16 +1,26 @@
+using System.Text.RegularExpressions;
+
 namespace ScatGirl.Core;
 
 static class FileScanner
 {
     static readonly HashSet<string> SkippedDirs =
-        ["bin", "obj", ".vs", ".git", ".github", "node_modules", ".nuke"];
+        new(["bin", "obj", ".vs", ".git", ".github", "node_modules", ".nuke"], StringComparer.OrdinalIgnoreCase);
 
-    internal static IEnumerable<string> GetCSharpFiles(string rootPath)
+    internal static IEnumerable<string> GetCSharpFiles(string rootPath, string? globFilter = null)
     {
         if (!Directory.Exists(rootPath))
             return [];
 
-        return Enumerate(rootPath);
+        if (globFilter is null)
+            return Enumerate(rootPath);
+
+        var absRoot = Path.GetFullPath(rootPath);
+        var regex   = GlobToRegex(globFilter);
+
+        return Enumerate(rootPath)
+            .Where(f => regex.IsMatch(
+                Path.GetRelativePath(absRoot, f).Replace('\\', '/')));
     }
 
     static IEnumerable<string> Enumerate(string directory)
@@ -20,11 +30,21 @@ static class FileScanner
 
         foreach (var subDir in Directory.EnumerateDirectories(directory))
         {
-            if (SkippedDirs.Contains(Path.GetFileName(subDir), StringComparer.OrdinalIgnoreCase))
+            if (SkippedDirs.Contains(Path.GetFileName(subDir)))
                 continue;
 
             foreach (var file in Enumerate(subDir))
                 yield return file;
         }
+    }
+
+    static Regex GlobToRegex(string glob)
+    {
+        var pattern = "^" + Regex.Escape(glob.Replace('\\', '/'))
+            .Replace(@"\*\*", ".*")
+            .Replace(@"\*", "[^/]*")
+            .Replace(@"\?", ".") + "$";
+
+        return new Regex(pattern, RegexOptions.IgnoreCase);
     }
 }
