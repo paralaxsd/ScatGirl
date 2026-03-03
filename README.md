@@ -72,7 +72,7 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 
 ```bash
 dotnet tool install --global ScatGirl.Mcp
-claude mcp add scatgirl-mcp --scope user -- dotnet scatgirl-mcp
+claude mcp add ScatGirl --scope user -- scatgirl-mcp
 ```
 
 ## CLI
