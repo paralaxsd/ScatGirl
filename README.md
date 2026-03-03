@@ -97,12 +97,45 @@ List all members declared directly in a named type — fields, properties, const
 **kind** filter (optional): `field` `property` `constructor` `method` `event`
 **inFile** (optional): glob pattern — useful when the type name is ambiguous across namespaces
 
-## Setup
+## MCP Server
+
+ScatGirl ships as an **MCP stdio server** — use it directly from Claude Code, Claude Desktop, or any MCP-compatible client without ever opening a terminal.
 
 ```bash
 dotnet tool install --global ScatGirl.Mcp
+```
+
+### Claude Code
+
+```bash
 claude mcp add ScatGirl --scope user -- scatgirl-mcp
 ```
+
+> `--scope user` is required so the server is available globally, not just within one project directory.
+
+### Claude Desktop
+
+`~/.claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "ScatGirl": {
+      "command": "scatgirl-mcp"
+    }
+  }
+}
+```
+
+### Available tools
+
+| Tool | Description |
+|---|---|
+| `find_declarations` | Find all declarations of a named symbol (`rootPath`, `symbolName`, `kind?`) |
+| `find_references` | Find all references to a named symbol (`rootPath`, `symbolName`, `kind?`, `inFile?`) |
+| `find_members` | List all members of a named type (`rootPath`, `typeName`, `kind?`, `inFile?`) |
+
+---
 
 ## CLI
 
