@@ -70,12 +70,16 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 
 ## Setup
 
+> Packages not yet published — build from source or wait for the first tagged release.
+
 ```bash
 dotnet tool install --global ScatGirl.Mcp
 claude mcp add scatgirl-mcp --scope user -- dotnet scatgirl-mcp
 ```
 
 ## CLI
+
+> Packages not yet published — build from source or wait for the first tagged release.
 
 ```bash
 dotnet tool install --global ScatGirl.Cli

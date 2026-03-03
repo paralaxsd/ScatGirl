@@ -1,0 +1,60 @@
+{
+  "profiles": {
+    "find: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "find C:/code/ScatGirl SyntaxNavigator"
+    },
+    "find: FileScanner": {
+      "commandName": "Project",
+      "commandLineArgs": "find C:/code/ScatGirl FileScanner"
+    },
+    "find: SymbolReference": {
+      "commandName": "Project",
+      "commandLineArgs": "find C:/code/ScatGirl SymbolReference"
+    },
+    "find --kind method: FindDeclarations": {
+      "commandName": "Project",
+      "commandLineArgs": "find C:/code/ScatGirl FindDeclarations --kind method"
+    },
+    "find --kind class: [all classes]": {
+      "commandName": "Project",
+      "commandLineArgs": "find C:/code/ScatGirl Walker --kind class"
+    },
+    "find [json]: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "find C:/code/ScatGirl SyntaxNavigator --json"
+    },
+    "refs: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator"
+    },
+    "refs: FindDeclarations": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl FindDeclarations"
+    },
+    "refs --kind typeof: SymbolReference": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SymbolReference --kind typeof"
+    },
+    "refs --kind nameof: SymbolReference": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SymbolReference --kind nameof"
+    },
+    "refs --in-file: SyntaxNavigator in Core": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --in-file **/ScatGirl.Core/**"
+    },
+    "refs --in-file: SyntaxNavigator in Tools only": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --in-file **/*Tools.cs"
+    },
+    "refs [json]: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --json"
+    },
+    "refs: [not found] IUserService": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl IUserService"
+    }
+  }
+}
