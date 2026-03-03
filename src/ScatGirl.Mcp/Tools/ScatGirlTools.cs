@@ -29,20 +29,33 @@ static class ScatGirlTools
         try { declarations = new SyntaxNavigator().FindDeclarations(rootPath, symbolName, kind); }
         catch (Exception ex) { return Error(ex.Message); }
 
+        var declResults = declarations.Select(d => new
+        {
+            d.Name,
+            d.Kind,
+            d.ContainingType,
+            filePath = d.Location.FilePath,
+            line     = d.Location.Line
+        });
+
+        if (declarations.Count == 0)
+            return Serialize(new
+            {
+                root = rootPath,
+                symbolName,
+                kind,
+                count = 0,
+                hint  = "No declarations found in local source. Symbol may be defined in an external assembly — try ScatMan.",
+                declarations = declResults
+            });
+
         return Serialize(new
         {
             root = rootPath,
             symbolName,
             kind,
-            count = declarations.Count,
-            declarations = declarations.Select(d => new
-            {
-                d.Name,
-                d.Kind,
-                d.ContainingType,
-                filePath = d.Location.FilePath,
-                line     = d.Location.Line
-            })
+            count        = declarations.Count,
+            declarations = declResults
         });
     }
 
@@ -106,6 +119,7 @@ static class ScatGirlTools
             {
                 r.FilePath,
                 r.Line,
+                r.Column,
                 r.LineText,
                 r.Kind
             })

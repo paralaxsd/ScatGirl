@@ -49,6 +49,7 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
             {
                 r.FilePath,
                 r.Line,
+                r.Column,
                 r.LineText,
                 r.Kind
             })
@@ -70,7 +71,7 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
         foreach (var r in refs)
         {
             AnsiConsole.MarkupLine(
-                $"[blue]{Markup.Escape(r.FilePath)}[/]:[bold]{r.Line}[/]");
+                $"[blue]{Markup.Escape(r.FilePath)}[/]:[bold]{r.Line}[/]:[bold]{r.Column}[/]");
             AnsiConsole.MarkupLine(
                 $"  [dim]{Markup.Escape(r.LineText)}[/]");
             AnsiConsole.WriteLine();

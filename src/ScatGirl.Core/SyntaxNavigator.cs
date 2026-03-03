@@ -72,9 +72,9 @@ public sealed class SyntaxNavigator
 
             foreach (var (node, refKind) in walker.Hits)
             {
-                var lineIndex = node.GetLocation().GetLineSpan().StartLinePosition.Line;
-                var lineText  = lines[lineIndex].ToString().Trim();
-                results.Add(new(relPath, lineIndex + 1, lineText, refKind));
+                var pos      = node.GetLocation().GetLineSpan().StartLinePosition;
+                var lineText = lines[pos.Line].ToString().Trim();
+                results.Add(new(relPath, pos.Line + 1, pos.Character + 1, lineText, refKind));
             }
         }
 
