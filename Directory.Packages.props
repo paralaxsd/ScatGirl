@@ -1,0 +1,17 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- ScatGirl.Core -->
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
+    <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
+    <!-- ScatGirl.Cli -->
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
+    <!-- ScatGirl.Mcp -->
+    <PackageVersion Include="ModelContextProtocol" Version="1.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
+    <!-- ScatGirl.Build -->
+    <PackageVersion Include="Nuke.Common" Version="10.1.0" />
+  </ItemGroup>
+</Project>
