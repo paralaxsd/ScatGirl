@@ -1,4 +1,4 @@
-# ScatGirl
+# ScatGirl [![ci](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml/badge.svg)](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml) [![CLI NuGet](https://img.shields.io/nuget/v/ScatGirl.Cli.svg?color=blue)](https://www.nuget.org/packages/ScatGirl.Cli) [![MCP NuGet](https://img.shields.io/nuget/v/ScatGirl.Mcp.svg?color=blue)](https://www.nuget.org/packages/ScatGirl.Mcp)
 
 > *Improvising over unfamiliar codebases since 2026.*
 
@@ -70,16 +70,12 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 
 ## Setup
 
-> Packages not yet published — build from source or wait for the first tagged release.
-
 ```bash
 dotnet tool install --global ScatGirl.Mcp
 claude mcp add scatgirl-mcp --scope user -- dotnet scatgirl-mcp
 ```
 
 ## CLI
-
-> Packages not yet published — build from source or wait for the first tagged release.
 
 ```bash
 dotnet tool install --global ScatGirl.Cli
