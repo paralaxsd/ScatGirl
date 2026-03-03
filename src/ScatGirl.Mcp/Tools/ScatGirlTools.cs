@@ -100,7 +100,8 @@ static class ScatGirlTools
     static string FindReferences(
         [Description("Absolute path to the repository root")] string rootPath,
         [Description("Symbol name to find references to (e.g. \"AudioCaptureService\", \"IUserService\")")] string symbolName,
-        [Description("Optional kind filter: identifier, typeof, nameof, attribute")] string? kind = null,
+        [Description("Optional kind filter: identifier, typeof, nameof, attribute, " +
+                     "implementation, invocation, object-creation, type-argument")] string? kind = null,
         [Description("Optional glob pattern to restrict search (e.g. \"**/*Service.cs\")")] string? inFile = null)
     {
         IReadOnlyList<SymbolReference> refs;

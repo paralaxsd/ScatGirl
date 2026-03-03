@@ -16,7 +16,8 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
         public string Symbol { get; init; } = "";
 
         [CommandOption("-k|--kind")]
-        [Description("Filter by reference kind: identifier, typeof, nameof, attribute")]
+        [Description("Filter by reference kind: identifier, typeof, nameof, attribute, " +
+                     "implementation, invocation, object-creation, type-argument")]
         public string? Kind { get; init; }
 
         [CommandOption("--in-file")]

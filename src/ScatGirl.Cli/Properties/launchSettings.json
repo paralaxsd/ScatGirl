@@ -52,6 +52,22 @@
       "commandName": "Project",
       "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --json"
     },
+    "refs --kind implementation: CSharpSyntaxWalker": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl CSharpSyntaxWalker --kind implementation"
+    },
+    "refs --kind invocation: FindDeclarations": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl FindDeclarations --kind invocation"
+    },
+    "refs --kind object-creation: SyntaxNavigator": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SyntaxNavigator --kind object-creation"
+    },
+    "refs --kind type-argument: SymbolDeclaration": {
+      "commandName": "Project",
+      "commandLineArgs": "refs C:/code/ScatGirl SymbolDeclaration --kind type-argument"
+    },
     "refs: [not found] IUserService": {
       "commandName": "Project",
       "commandLineArgs": "refs C:/code/ScatGirl IUserService"

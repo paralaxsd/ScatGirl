@@ -66,7 +66,7 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 }
 ```
 
-**kind** filter (optional): `identifier` `typeof` `nameof` `attribute`
+**kind** filter (optional): `identifier` `typeof` `nameof` `attribute` `implementation` `invocation` `object-creation` `type-argument`
 **inFile** (optional): glob pattern, e.g. `**/*Service.cs`
 
 ### `find_members`
@@ -145,6 +145,7 @@ scatgirl find . IUserService
 scatgirl find . ProcessPayment --kind method
 
 scatgirl refs . AudioCaptureService
+scatgirl refs . IMonitoringStateService --kind implementation
 scatgirl refs . IMonitoringStateService --kind identifier
 scatgirl refs . NoiseDetector --in-file "**/*Service.cs"
 scatgirl refs . AppJsonSerializerContext --json

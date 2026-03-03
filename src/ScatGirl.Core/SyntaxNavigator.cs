@@ -312,11 +312,16 @@ sealed class ReferenceWalker(string symbolName, string? kindFilter) : CSharpSynt
 
     static string ClassifyKind(IdentifierNameSyntax node) => node.Parent switch
     {
-        TypeOfExpressionSyntax                          => "typeof",
-        AttributeSyntax                                 => "attribute",
-        QualifiedNameSyntax { Parent: AttributeSyntax } => "attribute",
-        ArgumentSyntax arg when IsNameofArg(arg)        => "nameof",
-        _                                               => "identifier"
+        TypeOfExpressionSyntax                                           => "typeof",
+        AttributeSyntax                                                  => "attribute",
+        QualifiedNameSyntax { Parent: AttributeSyntax }                  => "attribute",
+        ArgumentSyntax arg when IsNameofArg(arg)                        => "nameof",
+        SimpleBaseTypeSyntax                                             => "implementation",
+        InvocationExpressionSyntax                                       => "invocation",
+        MemberAccessExpressionSyntax { Parent: InvocationExpressionSyntax } => "invocation",
+        ObjectCreationExpressionSyntax                                   => "object-creation",
+        TypeArgumentListSyntax                                           => "type-argument",
+        _                                                                => "identifier"
     };
 
     static bool IsNameofArg(ArgumentSyntax arg) =>
