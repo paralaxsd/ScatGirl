@@ -1,9 +1,9 @@
-using System.ComponentModel;
-using System.Text.Json;
-using ScatGirl.Cli;
 using ScatGirl.Core;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
+using System.Text.Json;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace ScatGirl.Cli.Commands;
 

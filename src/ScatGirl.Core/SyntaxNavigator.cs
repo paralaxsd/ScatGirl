@@ -7,16 +7,16 @@ namespace ScatGirl.Core;
 public sealed class SyntaxNavigator
 {
     public IReadOnlyList<SymbolDeclaration> FindDeclarations(
-        string rootPath, string symbolName, string? kind = null, bool useRegex = false)
+        string rootPath, string symbolName, string? kind = null, bool useRegex = false, bool fuzzyEnabled = false, int maxDistance = 2, string? globFilter = null)
     {
         var results = new List<SymbolDeclaration>();
         var absRoot = Path.GetFullPath(rootPath);
 
-        foreach (var filePath in FileScanner.GetCSharpFiles(rootPath))
+        foreach (var filePath in FileScanner.GetCSharpFiles(rootPath, globFilter))
         {
             var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(filePath));
 
-            var walker = new DeclarationWalker(symbolName, kind, useRegex);
+            var walker = new DeclarationWalker(symbolName, kind, useRegex, fuzzyEnabled, maxDistance);
             walker.Visit(tree.GetRoot());
 
             var relPath = Path.GetRelativePath(absRoot, filePath).Replace('\\', '/');
@@ -87,24 +87,57 @@ sealed class DeclarationWalker : CSharpSyntaxWalker
     private readonly string symbolName;
     private readonly string? kind;
     private readonly bool useRegex;
+    private readonly bool fuzzyEnabled;
+    private readonly int maxDistance;
     private readonly System.Text.RegularExpressions.Regex? regex;
     internal readonly List<(SyntaxNode Node, string Kind, string? ContainingType, string MatchedName)> Hits = [];
 
-    public DeclarationWalker(string symbolName, string? kind, bool useRegex)
+    public DeclarationWalker(string symbolName, string? kind, bool useRegex, bool fuzzyEnabled = false, int maxDistance = 2)
     {
         this.symbolName = symbolName;
         this.kind = kind;
         this.useRegex = useRegex;
+        this.fuzzyEnabled = fuzzyEnabled;
+        this.maxDistance = maxDistance;
         if (useRegex)
             regex = new System.Text.RegularExpressions.Regex(symbolName, System.Text.RegularExpressions.RegexOptions.Compiled);
     }
 
     void TryAdd(SyntaxNode locationNode, string decKind, string name)
     {
-        bool match = useRegex ? regex?.IsMatch(name) ?? false : name == symbolName;
+        bool match = false;
+        if (useRegex)
+            match = regex?.IsMatch(name) ?? false;
+        else if (fuzzyEnabled)
+            match = LevenshteinDistance(symbolName, name) <= maxDistance;
+        else
+            match = name == symbolName;
         if (!match) return;
         if (kind is not null && !string.Equals(decKind, kind, StringComparison.OrdinalIgnoreCase)) return;
         Hits.Add((locationNode, decKind, GetContainingType(locationNode), name));
+    }
+
+    static int LevenshteinDistance(string a, string b)
+    {
+        if (a == b) return 0;
+        if (a.Length == 0) return b.Length;
+        if (b.Length == 0) return a.Length;
+        var costs = new int[b.Length + 1];
+        for (int j = 0; j < costs.Length; j++) costs[j] = j;
+        for (int i = 1; i <= a.Length; i++)
+        {
+            costs[0] = i;
+            int prevCost = i - 1;
+            for (int j = 1; j <= b.Length; j++)
+            {
+                int currentCost = costs[j];
+                costs[j] = Math.Min(
+                    Math.Min(costs[j] + 1, costs[j - 1] + 1),
+                    prevCost + (a[i - 1] == b[j - 1] ? 0 : 1));
+                prevCost = currentCost;
+            }
+        }
+        return costs[b.Length];
     }
 
     static string? GetContainingType(SyntaxNode node)

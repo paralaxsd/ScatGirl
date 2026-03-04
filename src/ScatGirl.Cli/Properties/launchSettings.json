@@ -24,6 +24,18 @@
       "commandName": "Project",
       "commandLineArgs": "find ../../../../.. SyntaxNavigator --json"
     },
+    "find regex: Meta*": {
+      "commandName": "Project",
+      "commandLineArgs": "find ../../../../.. \"Meta.*\" --regex"
+    },
+    "find fuzzy: MetaCommand": {
+      "commandName": "Project",
+      "commandLineArgs": "find ../../../../.. MeatCommand --fuzzy"
+    },
+    "find fuzzy: MetaCommand [custom distance]": {
+      "commandName": "Project",
+      "commandLineArgs": "find ../../../../.. MeatCommand --fuzzy 1"
+    },
     "refs: SyntaxNavigator": {
       "commandName": "Project",
       "commandLineArgs": "refs ../../../../.. SyntaxNavigator"

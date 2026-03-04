@@ -20,14 +20,31 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
                      "field, constructor, delegate, event")]
         public string? Kind { get; init; }
 
+        [CommandOption("--fuzzy [distance]")]
+        [Description("Enable fuzzy search for symbol name. Optionally set max distance, e.g. --fuzzy 3")]
+        public FlagValue<int>? Fuzzy { get; init; }
+
         [CommandOption("--regex")]
         [Description("Interpret <symbol> as a regular expression for pattern-based search.")]
         public bool Regex { get; init; }
+
+        [CommandOption("--in-file")]
+        [Description("Restrict search to files matching glob (e.g. \"**/*Service.cs\")")]
+        public string? InFile { get; init; }
     }
 
     public override int Execute(CommandContext context, Settings settings, CancellationToken ct)
     {
-        var declarations = new SyntaxNavigator().FindDeclarations(settings.Root, settings.Symbol, settings.Kind, settings.Regex);
+        var fuzzyEnabled = settings.Fuzzy?.IsSet == true;
+        var maxDistance = fuzzyEnabled && settings.Fuzzy!.Value > 0 ? settings.Fuzzy!.Value : 2;
+        var declarations = new SyntaxNavigator().FindDeclarations(
+            settings.Root,
+            settings.Symbol,
+            settings.Kind,
+            settings.Regex,
+            fuzzyEnabled,
+            maxDistance,
+            settings.InFile);
 
         if (settings.Json) PrintJson(declarations, settings);
         else PrintFormatted(declarations, settings);
@@ -65,7 +82,8 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
             return;
         }
 
-        var table = new Table().Border(TableBorder.None);
+        var table = new Table().Border(TableBorder.Rounded);
+        table.AddColumn(new TableColumn("[bold yellow]Name[/]"));
         table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
         table.AddColumn(new TableColumn("[bold yellow]Location[/]"));
         table.AddColumn(new TableColumn("[bold yellow]Container[/]"));
@@ -77,6 +95,7 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
                 : "";
 
             table.AddRow(
+                $"[white]{Markup.Escape(d.Name)}[/]",
                 $"[cyan]{Markup.Escape(d.Kind)}[/]",
                 $"{Markup.Escape(d.Location.FilePath)}:[bold]{d.Location.Line}[/]",
                 container);

@@ -16,11 +16,41 @@ Sister project to [ScatMan](https://github.com/paralaxsd/ScatMan): ScatMan answe
 ### `find_declarations`
 Find all declarations of a named symbol across a C# codebase.
 
+**Search modes:**
+- **Exact** (default): Finds only exact symbol matches.
+- **Regex** (`--regex` or `regex: true`): Interprets the symbol name as a regular expression for pattern-based search.
+- **Fuzzy** (`--fuzzy`/`fuzzy: true`): Enables fuzzy search for symbol names. Optionally set the maximum allowed distance with `--fuzzy <n>` (CLI) or `maxDistance: n` (MCP).
+
+**File filter:**
+- **In-file** (`--in-file <glob>` or `inFile: <glob>`): Restricts the search to files matching the given glob pattern (e.g. `**/*Service.cs`).
+
+**Note:** Only one search mode can be active at a time. Regex and fuzzy cannot be combined. The tool validates input and returns an error if both are set.
+
+**Examples:**
+```bash
+scatgirl find . MeatCommand --fuzzy
+scatgirl find . MeatCommand --fuzzy 3
+scatgirl find . "I.*Service" --regex --in-file "**/*Service.cs"
+```
+```json
+{
+  "method": "find_declarations",
+  "params": {
+    "rootPath": "C:/projects/MyApp",
+    "symbolName": "MeatCommand",
+    "fuzzy": true,
+    "maxDistance": 3,
+    "inFile": "**/*Service.cs"
+  }
+}
+```
+
 ```json
 {
   "rootPath": "C:/projects/MyApp",
   "symbolName": "IUserService",
-  "kind": "interface"
+  "kind": "interface",
+  "inFile": "src/Core/*.cs"
 }
 ```
 
@@ -41,6 +71,13 @@ Find all declarations of a named symbol across a C# codebase.
 
 ### `find_references`
 Find all references to a named symbol across a C# codebase. Returns file, line, and the matching source line for each hit. Results are tagged `[syntactic]` — no compilation required, name-based matching.
+
+**Search modes:**
+- **Exact** (default): Finds only exact symbol matches.
+- **Regex** (`--regex` or `regex: true`): Interprets the symbol name as a regular expression for pattern-based search.
+- **Fuzzy** (`--fuzzy`/`fuzzy: true`): Enables fuzzy search for symbol names. Optionally set the maximum allowed distance with `--fuzzy <n>` (CLI) or `maxDistance: n` (MCP).
+
+**Note:** Only one search mode can be active at a time. Regex and fuzzy cannot be combined. The tool validates input and returns an error if both are set.
 
 ```json
 {
@@ -131,8 +168,8 @@ claude mcp add ScatGirl --scope user -- scatgirl-mcp
 
 | Tool | Description |
 |---|---|
-| `find_declarations` | Find all declarations of a named symbol (`rootPath`, `symbolName`, `kind?`, `regex?`) |
-| `find_references` | Find all references to a named symbol (`rootPath`, `symbolName`, `kind?`, `inFile?`, `regex?`) |
+| `find_declarations` | Find all declarations of a named symbol (`rootPath`, `symbolName`, `kind?`, `regex?`, `fuzzy?`, `maxDistance?`) |
+| `find_references` | Find all references to a named symbol (`rootPath`, `symbolName`, `kind?`, `inFile?`, `regex?`, `fuzzy?`, `maxDistance?`) |
 | `find_members` | List all members of a named type (`rootPath`, `typeName`, `kind?`, `inFile?`) |
 | `meta` | Show build and runtime metadata for ScatGirl MCP/CLI |
 
@@ -150,6 +187,12 @@ scatgirl refs . IMonitoringStateService --kind implementation
 scatgirl refs . IMonitoringStateService --kind identifier
 scatgirl refs . NoiseDetector --in-file "**/*Service.cs"
 scatgirl refs . AppJsonSerializerContext --json
+# Regex match:
+scatgirl refs . "Meta.*" --regex
+# Fuzzy match (default distance):
+scatgirl refs . MeatCommand --fuzzy
+# Fuzzy match (custom distance):
+scatgirl refs . MeatCommand --fuzzy 3
 
 scatgirl members . AudioCaptureService
 scatgirl members . AudioCaptureService --kind method
