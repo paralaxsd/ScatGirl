@@ -11,6 +11,14 @@
     <File Path="README.md" />
     <File Path="version.json" />
   </Folder>
+  <Folder Name="/0 Solution Items/.github/">
+    <File Path=".github/copilot-instructions.md" />
+    <File Path=".github/dependabot.yml" />
+  </Folder>
+  <Folder Name="/0 Solution Items/.github/workflows/">
+    <File Path=".github/workflows/ci.yml" />
+    <File Path=".github/workflows/publish-tool.yml" />
+  </Folder>
   <Folder Name="/1 src/">
     <Project Path="src/ScatGirl.Core/ScatGirl.Core.csproj" />
     <Project Path="src/ScatGirl.Cli/ScatGirl.Cli.csproj" />
