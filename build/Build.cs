@@ -27,6 +27,7 @@ class Build : NukeBuild
     AbsolutePath SolutionFile  => RootDirectory / "ScatGirl.slnx";
     AbsolutePath CliProject    => RootDirectory / "src" / "ScatGirl.Cli" / "ScatGirl.Cli.csproj";
     AbsolutePath McpProject    => RootDirectory / "src" / "ScatGirl.Mcp" / "ScatGirl.Mcp.csproj";
+    AbsolutePath CoreProject   => RootDirectory / "src" / "ScatGirl.Core" / "ScatGirl.Core.csproj";
 
     Target Clean => _ => _
         .Before(Restore)
@@ -48,7 +49,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             ArtifactsDir.CreateOrCleanDirectory();
-            foreach (var project in new[] { CliProject, McpProject })
+            foreach (var project in new[] { CliProject, McpProject, CoreProject })
                 DotNetPack(s => s
                     .SetProject(project)
                     .SetConfiguration(Configuration)

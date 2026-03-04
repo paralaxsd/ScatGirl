@@ -1,4 +1,4 @@
-# ScatGirl [![ci](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml/badge.svg)](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml) [![CLI NuGet](https://img.shields.io/nuget/v/ScatGirl.Cli.svg?color=blue)](https://www.nuget.org/packages/ScatGirl.Cli) [![MCP NuGet](https://img.shields.io/nuget/v/ScatGirl.Mcp.svg?color=blue)](https://www.nuget.org/packages/ScatGirl.Mcp)
+# ScatGirl [![ci](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml/badge.svg)](https://github.com/paralaxsd/ScatGirl/actions/workflows/ci.yml) [![ScatGirl.Cli NuGet](https://img.shields.io/nuget/v/ScatGirl.Cli.svg?color=blue&label=ScatGirl.Cli)](https://www.nuget.org/packages/ScatGirl.Cli) [![ScatGirl.Mcp NuGet](https://img.shields.io/nuget/v/ScatGirl.Mcp.svg?color=blue&label=ScatGirl.Mcp)](https://www.nuget.org/packages/ScatGirl.Mcp) [![ScatGirl.Core NuGet](https://img.shields.io/nuget/v/ScatGirl.Core.svg?color=blue&label=ScatGirl.Core)](https://www.nuget.org/packages/ScatGirl.Core) 
 ![ScatGirl logo](https://raw.githubusercontent.com/paralaxsd/ScatGirl/main/images/logo.png)
 
 > *Improvising over unfamiliar codebases since 2026.*
