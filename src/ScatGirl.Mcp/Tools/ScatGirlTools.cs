@@ -29,10 +29,11 @@ static class ScatGirlTools
         [Description("Absolute path to the repository root")] string rootPath,
         [Description("Symbol name to find (e.g. \"IUserService\", \"ProcessPayment\")")] string symbolName,
         [Description("Optional kind filter: class, interface, method, property, record, struct, " +
-                     "enum, field, constructor, delegate, event")] string? kind = null)
+                     "enum, field, constructor, delegate, event")] string? kind = null,
+        [Description("Interpret symbolName as a regular expression for pattern-based search.")] bool regex = false)
     {
         IReadOnlyList<SymbolDeclaration> declarations;
-        try { declarations = new SyntaxNavigator().FindDeclarations(rootPath, symbolName, kind); }
+        try { declarations = new SyntaxNavigator().FindDeclarations(rootPath, symbolName, kind, regex); }
         catch (Exception ex) { return Error(ex.Message); }
 
         var declResults = declarations.Select(d => new
@@ -112,10 +113,11 @@ static class ScatGirlTools
         [Description("Symbol name to find references to (e.g. \"AudioCaptureService\", \"IUserService\")")] string symbolName,
         [Description("Optional kind filter: identifier, typeof, nameof, attribute, " +
                      "implementation, invocation, object-creation, type-argument")] string? kind = null,
-        [Description("Optional glob pattern to restrict search (e.g. \"**/*Service.cs\")")] string? inFile = null)
+        [Description("Optional glob pattern to restrict search (e.g. \"**/*Service.cs\")")] string? inFile = null,
+        [Description("Interpret symbolName as a regular expression for pattern-based search.")] bool regex = false)
     {
         IReadOnlyList<SymbolReference> refs;
-        try { refs = new SyntaxNavigator().FindReferences(rootPath, symbolName, kind, inFile); }
+        try { refs = new SyntaxNavigator().FindReferences(rootPath, symbolName, kind, inFile, regex); }
         catch (Exception ex) { return Error(ex.Message); }
 
         return Serialize(new

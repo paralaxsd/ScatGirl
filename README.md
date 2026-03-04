@@ -131,9 +131,10 @@ claude mcp add ScatGirl --scope user -- scatgirl-mcp
 
 | Tool | Description |
 |---|---|
-| `find_declarations` | Find all declarations of a named symbol (`rootPath`, `symbolName`, `kind?`) |
-| `find_references` | Find all references to a named symbol (`rootPath`, `symbolName`, `kind?`, `inFile?`) |
+| `find_declarations` | Find all declarations of a named symbol (`rootPath`, `symbolName`, `kind?`, `regex?`) |
+| `find_references` | Find all references to a named symbol (`rootPath`, `symbolName`, `kind?`, `inFile?`, `regex?`) |
 | `find_members` | List all members of a named type (`rootPath`, `typeName`, `kind?`, `inFile?`) |
+| `meta` | Show build and runtime metadata for ScatGirl MCP/CLI |
 
 ---
 

@@ -23,12 +23,16 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
         [CommandOption("--in-file")]
         [Description("Restrict search to files matching glob (e.g. \"**/*Service.cs\")")]
         public string? InFile { get; init; }
+
+        [CommandOption("--regex")]
+        [Description("Interpret <symbol> as a regular expression for pattern-based search.")]
+        public bool Regex { get; init; }
     }
 
     public override int Execute(CommandContext context, Settings settings, CancellationToken ct)
     {
         var refs = new SyntaxNavigator().FindReferences(
-            settings.Root, settings.Symbol, settings.Kind, settings.InFile);
+            settings.Root, settings.Symbol, settings.Kind, settings.InFile, settings.Regex);
 
         if (settings.Json) PrintJson(refs, settings);
         else PrintFormatted(refs, settings);
@@ -69,13 +73,24 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
             return;
         }
 
+        var table = new Table().Border(TableBorder.None);
+        table.AddColumn(new TableColumn("[bold yellow]File[/]"));
+        table.AddColumn(new TableColumn("[bold yellow]Line[/]"));
+        table.AddColumn(new TableColumn("[bold yellow]Column[/]"));
+        table.AddColumn(new TableColumn("[bold yellow]Source[/]"));
+        table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
+
         foreach (var r in refs)
         {
-            AnsiConsole.MarkupLine(
-                $"[blue]{Markup.Escape(r.FilePath)}[/]:[bold]{r.Line}[/]:[bold]{r.Column}[/]");
-            AnsiConsole.MarkupLine(
-                $"  [dim]{Markup.Escape(r.LineText)}[/]");
-            AnsiConsole.WriteLine();
+            table.AddRow(
+                $"[blue]{Markup.Escape(r.FilePath)}[/]",
+                $"[bold]{r.Line}[/]",
+                $"[bold]{r.Column}[/]",
+                $"[dim]{Markup.Escape(r.LineText)}[/]",
+                $"[cyan]{Markup.Escape(r.Kind)}[/]"
+            );
         }
+
+        AnsiConsole.Write(table);
     }
 }

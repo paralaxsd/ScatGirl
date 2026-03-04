@@ -3,6 +3,7 @@ using Spectre.Console.Cli;
 using System.Globalization;
 using System.Text.Json;
 using ScatGirl.Core;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace ScatGirl.Cli.Commands;
 

@@ -1,9 +1,9 @@
-using System.ComponentModel;
-using System.Text.Json;
-using ScatGirl.Cli;
 using ScatGirl.Core;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.ComponentModel;
+using System.Text.Json;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace ScatGirl.Cli.Commands;
 
@@ -19,11 +19,15 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
         [Description("Filter by kind: class, interface, method, property, record, struct, enum, " +
                      "field, constructor, delegate, event")]
         public string? Kind { get; init; }
+
+        [CommandOption("--regex")]
+        [Description("Interpret <symbol> as a regular expression for pattern-based search.")]
+        public bool Regex { get; init; }
     }
 
     public override int Execute(CommandContext context, Settings settings, CancellationToken ct)
     {
-        var declarations = new SyntaxNavigator().FindDeclarations(settings.Root, settings.Symbol, settings.Kind);
+        var declarations = new SyntaxNavigator().FindDeclarations(settings.Root, settings.Symbol, settings.Kind, settings.Regex);
 
         if (settings.Json) PrintJson(declarations, settings);
         else PrintFormatted(declarations, settings);
@@ -61,10 +65,10 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
             return;
         }
 
-        var table = new Table().BorderStyle(Style.Plain).HideHeaders();
-        table.AddColumn("kind");
-        table.AddColumn("location");
-        table.AddColumn("container");
+        var table = new Table().Border(TableBorder.None);
+        table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
+        table.AddColumn(new TableColumn("[bold yellow]Location[/]"));
+        table.AddColumn(new TableColumn("[bold yellow]Container[/]"));
 
         foreach (var d in declarations)
         {

@@ -83,11 +83,9 @@ sealed class MembersCommand : Command<MembersCommand.Settings>
         {
             AnsiConsole.MarkupLine($"[cyan]{group.Key}s[/]");
 
-            var table = new Table()
-                .Border(TableBorder.None)
-                .HideHeaders();
-            table.AddColumn("sig");
-            table.AddColumn(new TableColumn("loc") { NoWrap = true });
+            var table = new Table().Border(TableBorder.None);
+            table.AddColumn(new TableColumn("[bold yellow]Signature[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Location[/]"));
 
             foreach (var m in group)
             {
@@ -99,7 +97,6 @@ sealed class MembersCommand : Command<MembersCommand.Settings>
             }
 
             AnsiConsole.Write(table);
-
             AnsiConsole.WriteLine();
         }
     }

@@ -7,7 +7,7 @@ namespace ScatGirl.Core;
 public sealed class SyntaxNavigator
 {
     public IReadOnlyList<SymbolDeclaration> FindDeclarations(
-        string rootPath, string symbolName, string? kind = null)
+        string rootPath, string symbolName, string? kind = null, bool useRegex = false)
     {
         var results = new List<SymbolDeclaration>();
         var absRoot = Path.GetFullPath(rootPath);
@@ -16,14 +16,14 @@ public sealed class SyntaxNavigator
         {
             var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(filePath));
 
-            var walker = new DeclarationWalker(symbolName, kind);
+            var walker = new DeclarationWalker(symbolName, kind, useRegex);
             walker.Visit(tree.GetRoot());
 
             var relPath = Path.GetRelativePath(absRoot, filePath).Replace('\\', '/');
-            foreach (var (node, decKind, containingType) in walker.Hits)
+            foreach (var (node, decKind, containingType, matchedName) in walker.Hits)
             {
                 var line = node.GetLocation().GetLineSpan().StartLinePosition.Line + 1;
-                results.Add(new(symbolName, decKind, containingType, new(relPath, line)));
+                results.Add(new(matchedName, decKind, containingType, new(relPath, line)));
             }
         }
 
@@ -55,7 +55,7 @@ public sealed class SyntaxNavigator
     }
 
     public IReadOnlyList<SymbolReference> FindReferences(
-        string rootPath, string symbolName, string? kind = null, string? globFilter = null)
+        string rootPath, string symbolName, string? kind = null, string? globFilter = null, bool useRegex = false)
     {
         var results = new List<SymbolReference>();
         var absRoot = Path.GetFullPath(rootPath);
@@ -64,7 +64,7 @@ public sealed class SyntaxNavigator
         {
             var tree = CSharpSyntaxTree.ParseText(File.ReadAllText(filePath));
 
-            var walker = new ReferenceWalker(symbolName, kind);
+            var walker = new ReferenceWalker(symbolName, kind, useRegex);
             walker.Visit(tree.GetRoot());
 
             var relPath = Path.GetRelativePath(absRoot, filePath).Replace('\\', '/');
@@ -82,16 +82,29 @@ public sealed class SyntaxNavigator
     }
 }
 
-sealed class DeclarationWalker(string symbolName, string? kind) : CSharpSyntaxWalker
+sealed class DeclarationWalker : CSharpSyntaxWalker
 {
-    internal readonly List<(SyntaxNode Node, string Kind, string? ContainingType)> Hits = [];
+    private readonly string symbolName;
+    private readonly string? kind;
+    private readonly bool useRegex;
+    private readonly System.Text.RegularExpressions.Regex? regex;
+    internal readonly List<(SyntaxNode Node, string Kind, string? ContainingType, string MatchedName)> Hits = [];
+
+    public DeclarationWalker(string symbolName, string? kind, bool useRegex)
+    {
+        this.symbolName = symbolName;
+        this.kind = kind;
+        this.useRegex = useRegex;
+        if (useRegex)
+            regex = new System.Text.RegularExpressions.Regex(symbolName, System.Text.RegularExpressions.RegexOptions.Compiled);
+    }
 
     void TryAdd(SyntaxNode locationNode, string decKind, string name)
     {
-        if (name != symbolName) return;
+        bool match = useRegex ? regex?.IsMatch(name) ?? false : name == symbolName;
+        if (!match) return;
         if (kind is not null && !string.Equals(decKind, kind, StringComparison.OrdinalIgnoreCase)) return;
-
-        Hits.Add((locationNode, decKind, GetContainingType(locationNode)));
+        Hits.Add((locationNode, decKind, GetContainingType(locationNode), name));
     }
 
     static string? GetContainingType(SyntaxNode node)
@@ -301,13 +314,27 @@ sealed class MemberWalker(string typeName, string? kind) : CSharpSyntaxWalker
         Normalize($"{Mods(ebs.Modifiers)}extension{ebs.ParameterList}");
 }
 
-sealed class ReferenceWalker(string symbolName, string? kindFilter) : CSharpSyntaxWalker
+sealed class ReferenceWalker : CSharpSyntaxWalker
 {
+    private readonly string symbolName;
+    private readonly string? kindFilter;
+    private readonly bool useRegex;
+    private readonly System.Text.RegularExpressions.Regex? regex;
     internal readonly List<(SyntaxNode Node, string Kind)> Hits = [];
+
+    public ReferenceWalker(string symbolName, string? kindFilter, bool useRegex)
+    {
+        this.symbolName = symbolName;
+        this.kindFilter = kindFilter;
+        this.useRegex = useRegex;
+        if (useRegex)
+            regex = new System.Text.RegularExpressions.Regex(symbolName, System.Text.RegularExpressions.RegexOptions.Compiled);
+    }
 
     public override void VisitIdentifierName(IdentifierNameSyntax node)
     {
-        if (node.Identifier.Text == symbolName)
+        bool match = useRegex ? regex?.IsMatch(node.Identifier.Text) ?? false : node.Identifier.Text == symbolName;
+        if (match)
         {
             var kind = ClassifyKind(node);
             if (kindFilter is null || string.Equals(kind, kindFilter, StringComparison.OrdinalIgnoreCase))
