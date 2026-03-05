@@ -26,43 +26,62 @@ Find all declarations of a named symbol across a C# codebase.
 
 **Note:** Only one search mode can be active at a time. Regex and fuzzy cannot be combined. The tool validates input and returns an error if both are set.
 
+
+
+
+
 **Examples:**
+
+Fuzzy search for a symbol name (default distance):
 ```bash
-scatgirl find . MeatCommand --fuzzy
-scatgirl find . MeatCommand --fuzzy 3
-scatgirl find . "I.*Service" --regex --in-file "**/*Service.cs"
+scatgirl find . MeatCommand --fuzzy --json
 ```
+Result:
 ```json
 {
-  "method": "find_declarations",
-  "params": {
-    "rootPath": "C:/projects/MyApp",
-    "symbolName": "MeatCommand",
-    "fuzzy": true,
-    "maxDistance": 3,
-    "inFile": "**/*Service.cs"
-  }
-}
-```
-
-```json
-{
-  "rootPath": "C:/projects/MyApp",
-  "symbolName": "IUserService",
-  "kind": "interface",
-  "inFile": "src/Core/*.cs"
-}
-```
-
-```json
-{
-  "root": "C:/projects/MyApp",
-  "symbolName": "IUserService",
-  "kind": "interface",
+  "root": ".",
+  "symbolName": "MeatCommand",
+  "kind": null,
   "count": 1,
   "declarations": [
-    { "name": "IUserService", "kind": "interface", "containingType": null,
-      "filePath": "src/Core/IUserService.cs", "line": 5 }
+    {
+      "name": "MetaCommand",
+      "kind": "class",
+      "containingType": null,
+      "filePath": "src/ScatGirl.Cli/Commands/MetaCommand.cs",
+      "line": 10
+    }
+  ]
+}
+```
+
+
+Regex search for all commands matching 'Me.*Command' in files ending with 'mmand.cs':
+```bash
+scatgirl find . "Me.*Command" --regex --in-file "**/*mmand.cs" --json
+```
+Result:
+```json
+{
+  "root": ".",
+  "symbolName": "Me.*Command",
+  "kind": null,
+  "count": 2,
+  "declarations": [
+    {
+      "name": "MembersCommand",
+      "kind": "class",
+      "containingType": null,
+      "filePath": "src/ScatGirl.Cli/Commands/MembersCommand.cs",
+      "line": 10
+    },
+    {
+      "name": "MetaCommand",
+      "kind": "class",
+      "containingType": null,
+      "filePath": "src/ScatGirl.Cli/Commands/MetaCommand.cs",
+      "line": 10
+    }
   ]
 }
 ```
@@ -79,26 +98,34 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 
 **Note:** Only one search mode can be active at a time. Regex and fuzzy cannot be combined. The tool validates input and returns an error if both are set.
 
-```json
-{
-  "rootPath": "C:/projects/MyApp",
-  "symbolName": "AudioCaptureService",
-  "kind": "identifier",
-  "inFile": "**/*Service.cs"
-}
+Find references to a symbol (e.g., using regex):
+```bash
+scatgirl refs . "RefsC.*" --regex --json
 ```
-
+Result:
 ```json
 {
-  "root": "C:/projects/MyApp",
-  "symbolName": "AudioCaptureService",
+  "root": ".",
+  "symbolName": "RefsC.*",
+  "kind": null,
+  "inFile": null,
   "analysis": "syntactic",
   "count": 2,
   "references": [
-    { "filePath": "src/Program.cs", "line": 38,
-      "lineText": "builder.Services.AddHostedService<AudioCaptureService>();", "kind": "identifier" },
-    { "filePath": "src/AudioCaptureService.cs", "line": 12,
-      "lineText": "sealed class AudioCaptureService : IHostedService", "kind": "identifier" }
+    {
+      "filePath": "src/ScatGirl.Cli/Program.cs",
+      "line": 16,
+      "column": 23,
+      "lineText": "config.AddCommand<RefsCommand>(\"refs\")",
+      "kind": "type-argument"
+    },
+    {
+      "filePath": "src/ScatGirl.Cli/Commands/RefsCommand.cs",
+      "line": 10,
+      "column": 36,
+      "lineText": "sealed class RefsCommand : Command<RefsCommand.Settings>",
+      "kind": "identifier"
+    }
   ]
 }
 ```
@@ -107,26 +134,29 @@ Find all references to a named symbol across a C# codebase. Returns file, line, 
 **inFile** (optional): glob pattern, e.g. `**/*Service.cs`
 
 ### `find_members`
+
+
 List all members declared directly in a named type — fields, properties, constructors, methods, and events. Only own members are shown (no inherited members).
 
-```json
-{
-  "rootPath": "C:/projects/MyApp",
-  "typeName": "AudioCaptureService",
-  "kind": "method"
-}
+Example:
+```bash
+scatgirl members . MembersCommand --kind field --json
 ```
-
+Result:
 ```json
 {
-  "root": "C:/projects/MyApp",
-  "typeName": "AudioCaptureService",
-  "count": 2,
+  "root": ".",
+  "typeName": "MembersCommand",
+  "kind": "field",
+  "inFile": null,
+  "count": 1,
   "members": [
-    { "kind": "method", "signature": "public Task StartAsync(CancellationToken ct)",
-      "filePath": "src/AudioCaptureService.cs", "line": 45 },
-    { "kind": "method", "signature": "public Task StopAsync(CancellationToken ct)",
-      "filePath": "src/AudioCaptureService.cs", "line": 67 }
+    {
+      "kind": "field",
+      "signature": "static readonly string[] KindOrder",
+      "filePath": "src/ScatGirl.Cli/Commands/MembersCommand.cs",
+      "line": 12
+    }
   ]
 }
 ```
@@ -172,30 +202,3 @@ claude mcp add ScatGirl --scope user -- scatgirl-mcp
 | `find_references` | Find all references to a named symbol (`rootPath`, `symbolName`, `kind?`, `inFile?`, `regex?`, `fuzzy?`, `maxDistance?`) |
 | `find_members` | List all members of a named type (`rootPath`, `typeName`, `kind?`, `inFile?`) |
 | `meta` | Show build and runtime metadata for ScatGirl MCP/CLI |
-
----
-
-## CLI
-
-```bash
-dotnet tool install --global ScatGirl.Cli
-scatgirl find . IUserService
-scatgirl find . ProcessPayment --kind method
-
-scatgirl refs . AudioCaptureService
-scatgirl refs . IMonitoringStateService --kind implementation
-scatgirl refs . IMonitoringStateService --kind identifier
-scatgirl refs . NoiseDetector --in-file "**/*Service.cs"
-scatgirl refs . AppJsonSerializerContext --json
-# Regex match:
-scatgirl refs . "Meta.*" --regex
-# Fuzzy match (default distance):
-scatgirl refs . MeatCommand --fuzzy
-# Fuzzy match (custom distance):
-scatgirl refs . MeatCommand --fuzzy 3
-
-scatgirl members . AudioCaptureService
-scatgirl members . AudioCaptureService --kind method
-scatgirl members . SyntaxNavigator --in-file "**/ScatGirl.Core/**"
-scatgirl members . SyntaxNavigator --json
-```
