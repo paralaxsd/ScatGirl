@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>scatgirl</ToolCommandName>
+    <Description>Command-line interface for ScatGirl, a Roslyn-based symbol navigation tool.</Description>
   </PropertyGroup>
 
   <ItemGroup>

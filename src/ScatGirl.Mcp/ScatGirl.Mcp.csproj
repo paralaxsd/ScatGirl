@@ -4,6 +4,7 @@
     <OutputType>Exe</OutputType>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>scatgirl-mcp</ToolCommandName>
+    <Description>Model Context Protocol (MCP) tool for ScatGirl, enabling advanced symbol navigation.</Description>
   </PropertyGroup>
 
   <ItemGroup>
