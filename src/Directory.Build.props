@@ -13,6 +13,9 @@ https://thomaslevesque.com/2017/09/18/common-msbuild-properties-and-items-with-d
     <Copyright>© Speckdrumm 2026</Copyright>
     <RepositoryUrl>https://github.com/paralaxsd/ScatMan</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <!-- XML docs: -->
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <!-- NuGet package metadata (ignored for non-packable projects) -->
@@ -22,9 +25,6 @@ https://thomaslevesque.com/2017/09/18/common-msbuild-properties-and-items-with-d
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <!-- XML docs: -->
-    <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
