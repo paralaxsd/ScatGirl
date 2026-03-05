@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
     <PackageId>ScatGirl.Core</PackageId>
     <Description>Core library for Roslyn-based symbol navigation and analysis.</Description>
     <PackageTags>roslyn;symbol;navigation;analysis;scatgirl</PackageTags>

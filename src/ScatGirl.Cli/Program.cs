@@ -5,7 +5,8 @@ var app = new CommandApp();
 
 app.Configure(config =>
 {
-    config.SetApplicationName("scatgirl");
+    config.SetApplicationName("scatgirl")
+        .SetApplicationVersion(ThisAssembly.AssemblyInformationalVersion);
 
     config.AddCommand<FindDeclarationsCommand>("find")
         .WithDescription("Find all declarations of a named symbol in a C# codebase.")
