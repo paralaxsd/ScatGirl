@@ -21,6 +21,7 @@
   </Folder>
   <Folder Name="/1 src/">
     <Project Path="src/ScatGirl.Core/ScatGirl.Core.csproj" />
+    <File Path="src/Directory.Build.props" />
     <Project Path="src/ScatGirl.Cli/ScatGirl.Cli.csproj" />
     <Project Path="src/ScatGirl.Mcp/ScatGirl.Mcp.csproj" />
   </Folder>
