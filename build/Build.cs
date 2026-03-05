@@ -1,8 +1,12 @@
+using System.Linq;
 using Nuke.Common;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.IO;
+using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
+// ReSharper disable UnusedMember.Local
+// ReSharper disable AllUnderscoreLocalParameterName
 
 [GitHubActions("ci",
     GitHubActionsImage.UbuntuLatest,
@@ -60,10 +64,20 @@ class Build : NukeBuild
     Target Push => _ => _
         .DependsOn(Pack)
         .Requires(() => NuGetApiKey)
-        .Executes(() => DotNetNuGetPush(s => s
-            .SetSource("https://api.nuget.org/v3/index.json")
-            .SetApiKey(NuGetApiKey)
-            .SetTargetPath(ArtifactsDir / "*.nupkg")));
+        .Executes(() =>
+        {
+            var nonSymbolNugetPackages = ArtifactsDir.GetFiles("*.nupkg")
+                .Where(f => !f.Name.EndsWith(".symbols.nupkg"));
+
+            foreach (var pkg in nonSymbolNugetPackages)
+            {
+                DotNetNuGetPush(s => s
+                    .SetTargetPath(pkg)
+                    .SetSource("https://api.nuget.org/v3/index.json")
+                    .SetApiKey(NuGetApiKey)
+                    .AddProcessAdditionalArguments("--skip-duplicate"));
+            }
+        });
 
     /******************************************************************************************
      * METHODS
