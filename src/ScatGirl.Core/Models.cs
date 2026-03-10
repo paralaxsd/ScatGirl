@@ -11,5 +11,6 @@ public record SymbolReference(
 public record TypeMember(string Kind, string Signature, Location Location);
 
 public record MetaInfo(
+    string NugetPackageName,
     string Version, string Configuration,  DateTime CommitDate,
     bool IsPublic, string OS, string DotNetVersion);

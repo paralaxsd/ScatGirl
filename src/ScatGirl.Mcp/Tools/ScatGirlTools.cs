@@ -147,7 +147,7 @@ static class ScatGirlTools
     [McpServerTool(Name = "meta")]
     [Description(
         "Show metadata about the ScatGirl MCP tool, including version and build information.")]
-    static string Meta() => Serialize(MetaInfoFactory.Create());
+    static string Meta() => Serialize(MetaInfoFactory.Create("ScatGirl.Mcp"));
 
     static string Serialize(object value) => JsonSerializer.Serialize(value, JsonOptions);
 

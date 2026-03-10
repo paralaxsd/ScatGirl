@@ -2,8 +2,9 @@
 
 public static class MetaInfoFactory
 {
-    public static MetaInfo Create() =>
-        new(ThisAssembly.AssemblyInformationalVersion,
+    public static MetaInfo Create(string nugetPackageName) =>
+        new(nugetPackageName,
+            ThisAssembly.AssemblyInformationalVersion,
             ThisAssembly.AssemblyConfiguration,
             ThisAssembly.GitCommitDate,
             ThisAssembly.IsPublicRelease,
