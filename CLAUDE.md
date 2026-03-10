@@ -18,5 +18,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Register with `claude mcp add --scope user` — the VS Code extension's claude.exe subprocess only reads top-level `mcpServers`, not project-scoped entries
 - Registration: `claude mcp add ScatGirl --scope user -- scatgirl-mcp`
 
+## Solution Explorer
+
+Non-source files (e.g. global.json) outside the project structure should appear in Solution Explorer under 'Solution Items'.
+
 ## Git
 - **No conventional commits** — no `feat:`, `fix:`, `chore:` prefixes. Plain imperative subject line, capitalize first word.
