@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 
+## [v0.1.33] – 2026-06-11
+
+### Changed
+- Move ispackable-conditionals into main property group 
+  This ensures proper icon+readme on Nuget.org
+
 ## [v0.1.31] – 2026-03-11
 
 ### Added
