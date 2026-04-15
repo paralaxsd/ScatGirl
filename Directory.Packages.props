@@ -5,7 +5,7 @@
   <ItemGroup>
     <!-- ScatGirl.Core -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.201" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.202" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
     <!-- ScatGirl.Cli -->
     <PackageVersion Include="Spectre.Console.Cli" Version="0.53.1" />
