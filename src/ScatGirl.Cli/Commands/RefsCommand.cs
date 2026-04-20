@@ -29,7 +29,7 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
         public bool Regex { get; init; }
     }
 
-    public override int Execute(CommandContext context, Settings settings, CancellationToken ct)
+    protected override int Execute(CommandContext context, Settings settings, CancellationToken ct)
     {
         var refs = new SyntaxNavigator().FindReferences(
             settings.Root, settings.Symbol, settings.Kind, settings.InFile, settings.Regex);

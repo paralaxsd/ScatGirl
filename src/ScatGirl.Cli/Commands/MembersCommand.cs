@@ -26,7 +26,7 @@ sealed class MembersCommand : Command<MembersCommand.Settings>
         public string? InFile { get; init; }
     }
 
-    public override int Execute(CommandContext context, Settings settings, CancellationToken ct)
+    protected override int Execute(CommandContext context, Settings settings, CancellationToken ct)
     {
         var members = new SyntaxNavigator().FindMembers(
             settings.Root, settings.Symbol, settings.Kind, settings.InFile);
