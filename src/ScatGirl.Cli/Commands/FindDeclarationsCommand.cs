@@ -33,7 +33,7 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
         public string? InFile { get; init; }
     }
 
-    public override int Execute(CommandContext context, Settings settings, CancellationToken ct)
+    protected override int Execute(CommandContext context, Settings settings, CancellationToken ct)
     {
         var fuzzyEnabled = settings.Fuzzy?.IsSet == true;
         var maxDistance = fuzzyEnabled && settings.Fuzzy!.Value > 0 ? settings.Fuzzy!.Value : 2;
