@@ -11,7 +11,7 @@
     <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
     <!-- ScatGirl.Mcp -->
     <PackageVersion Include="ModelContextProtocol" Version="1.2.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.6" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.7" />
     <!-- ScatGirl.Build -->
     <PackageVersion Include="Nuke.Common" Version="10.1.0" />
   </ItemGroup>
