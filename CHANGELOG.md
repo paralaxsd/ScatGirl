@@ -3,6 +3,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.0.0] – 2026-05-04
+
+### Fixed
+- Build compatibility with Spectre.Console.Cli 0.55.0
+
+### Dependencies
+- Updated to .NET 10.0.203 SDK
+- Updated various NuGet packages for compatibility
+
+---
 
 ## [v0.1.33] – 2026-06-11
 
