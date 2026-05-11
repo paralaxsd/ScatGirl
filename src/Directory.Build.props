@@ -11,7 +11,7 @@ https://thomaslevesque.com/2017/09/18/common-msbuild-properties-and-items-with-d
     <Authors>Paralax^Speckdrumm; Claude Sonnet</Authors>
     <Company>Speckdrumm</Company>
     <Copyright>© Speckdrumm 2026</Copyright>
-    <RepositoryUrl>https://github.com/paralaxsd/ScatMan</RepositoryUrl>
+    <RepositoryUrl>https://github.com/paralaxsd/ScatGirl</RepositoryUrl>
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageIcon>icon.png</PackageIcon>
