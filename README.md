@@ -43,13 +43,17 @@ Result:
   "symbolName": "MeatCommand",
   "kind": null,
   "count": 1,
-  "declarations": [
+  "results": [
     {
-      "name": "MetaCommand",
-      "kind": "class",
-      "containingType": null,
-      "filePath": "src/ScatGirl.Cli/Commands/MetaCommand.cs",
-      "line": 10
+      "file": "src/ScatGirl.Cli/Commands/MetaCommand.cs",
+      "hits": [
+        {
+          "name": "MetaCommand",
+          "kind": "class",
+          "type": null,
+          "line": 10
+        }
+      ]
     }
   ]
 }
@@ -67,20 +71,28 @@ Result:
   "symbolName": "Me.*Command",
   "kind": null,
   "count": 2,
-  "declarations": [
+  "results": [
     {
-      "name": "MembersCommand",
-      "kind": "class",
-      "containingType": null,
-      "filePath": "src/ScatGirl.Cli/Commands/MembersCommand.cs",
-      "line": 10
+      "file": "src/ScatGirl.Cli/Commands/MembersCommand.cs",
+      "hits": [
+        {
+          "name": "MembersCommand",
+          "kind": "class",
+          "type": null,
+          "line": 10
+        }
+      ]
     },
     {
-      "name": "MetaCommand",
-      "kind": "class",
-      "containingType": null,
-      "filePath": "src/ScatGirl.Cli/Commands/MetaCommand.cs",
-      "line": 10
+      "file": "src/ScatGirl.Cli/Commands/MetaCommand.cs",
+      "hits": [
+        {
+          "name": "MetaCommand",
+          "kind": "class",
+          "type": null,
+          "line": 10
+        }
+      ]
     }
   ]
 }
@@ -111,20 +123,28 @@ Result:
   "inFile": null,
   "analysis": "syntactic",
   "count": 2,
-  "references": [
+  "results": [
     {
-      "filePath": "src/ScatGirl.Cli/Program.cs",
-      "line": 16,
-      "column": 23,
-      "lineText": "config.AddCommand<RefsCommand>(\"refs\")",
-      "kind": "type-argument"
+      "file": "src/ScatGirl.Cli/Program.cs",
+      "hits": [
+        {
+          "line": 16,
+          "col": 23,
+          "text": "config.AddCommand<RefsCommand>(\"refs\")",
+          "kind": "type-argument"
+        }
+      ]
     },
     {
-      "filePath": "src/ScatGirl.Cli/Commands/RefsCommand.cs",
-      "line": 10,
-      "column": 36,
-      "lineText": "sealed class RefsCommand : Command<RefsCommand.Settings>",
-      "kind": "identifier"
+      "file": "src/ScatGirl.Cli/Commands/RefsCommand.cs",
+      "hits": [
+        {
+          "line": 10,
+          "col": 36,
+          "text": "sealed class RefsCommand : Command<RefsCommand.Settings>",
+          "kind": "identifier"
+        }
+      ]
     }
   ]
 }
@@ -150,12 +170,16 @@ Result:
   "kind": "field",
   "inFile": null,
   "count": 1,
-  "members": [
+  "results": [
     {
-      "kind": "field",
-      "signature": "static readonly string[] KindOrder",
-      "filePath": "src/ScatGirl.Cli/Commands/MembersCommand.cs",
-      "line": 12
+      "file": "src/ScatGirl.Cli/Commands/MembersCommand.cs",
+      "hits": [
+        {
+          "kind": "field",
+          "sig": "static readonly string[] KindOrder",
+          "line": 12
+        }
+      ]
     }
   ]
 }

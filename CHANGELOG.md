@@ -3,6 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.1.0] – 2026-05-11
+
+### Added
+- **Token Optimization**: MCP and CLI outputs are now grouped by file path and use concise property names (e.g., `file`, `sig`, `text`). This significantly reduces token consumption for LLMs.
+- **Improved CLI Readability**: Text output in the CLI is now organized into file-based sections with clean tables.
+- **Project Guidelines**: Added `GEMINI.md` and updated `CLAUDE.md` to define strict coding and git conventions for AI-assisted development.
+
+### Changed
+- Updated `ModelContextProtocol` to 1.3.0.
+
+### Fixed
+- Resolved security vulnerabilities in Nuke-related dependencies (`System.Security.Cryptography.Xml`, `NuGet.Packaging`).
+
 ## [1.0.0] – 2026-05-04
 
 ### Fixed
