@@ -38,14 +38,19 @@ static class ScatGirlTools
         try { declarations = new SyntaxNavigator().FindDeclarations(rootPath, symbolName, kind, regex, fuzzy, maxDistance); }
         catch (Exception ex) { return Error(ex.Message); }
 
-        var declResults = declarations.Select(d => new
-        {
-            d.Name,
-            d.Kind,
-            d.ContainingType,
-            filePath = d.Location.FilePath,
-            line     = d.Location.Line
-        });
+        var declResults = declarations
+            .GroupBy(d => d.Location.FilePath)
+            .Select(g => new
+            {
+                file = g.Key,
+                hits = g.Select(d => new
+                {
+                    name = d.Name,
+                    kind = d.Kind,
+                    type = d.ContainingType,
+                    line = d.Location.Line
+                })
+            });
 
         if (declarations.Count == 0)
             return Serialize(new
@@ -55,7 +60,7 @@ static class ScatGirlTools
                 kind,
                 count = 0,
                 hint  = "No declarations found in local source. Symbol may be defined in an external assembly — try ScatMan.",
-                declarations = declResults
+                results = declResults
             });
 
         return Serialize(new
@@ -63,8 +68,8 @@ static class ScatGirlTools
             root = rootPath,
             symbolName,
             kind,
-            count        = declarations.Count,
-            declarations = declResults
+            count   = declarations.Count,
+            results = declResults
         });
     }
 
@@ -93,13 +98,15 @@ static class ScatGirlTools
             kind,
             inFile,
             count    = members.Count,
-            members  = members.Select(m => new
-            {
-                m.Kind,
-                m.Signature,
-                filePath = m.Location.FilePath,
-                line     = m.Location.Line
-            })
+            results  = members.GroupBy(m => m.Location.FilePath)
+                        .Select(g => new {
+                            file = g.Key,
+                            hits = g.Select(m => new {
+                                kind = m.Kind,
+                                sig  = m.Signature,
+                                line = m.Location.Line
+                            })
+                        })
         });
     }
 
@@ -132,14 +139,16 @@ static class ScatGirlTools
             inFile,
             analysis   = "syntactic",
             count      = refs.Count,
-            references = refs.Select(r => new
-            {
-                r.FilePath,
-                r.Line,
-                r.Column,
-                r.LineText,
-                r.Kind
-            })
+            results    = refs.GroupBy(r => r.FilePath)
+                           .Select(g => new {
+                               file = g.Key,
+                               hits = g.Select(r => new {
+                                   line = r.Line,
+                                   col  = r.Column,
+                                   text = r.LineText,
+                                   kind = r.Kind
+                               })
+                           })
         });
     }
 

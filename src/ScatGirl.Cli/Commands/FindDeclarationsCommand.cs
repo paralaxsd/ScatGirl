@@ -60,14 +60,19 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
             symbolName = settings.Symbol,
             kind = settings.Kind,
             count = declarations.Count,
-            declarations = declarations.Select(d => new
-            {
-                d.Name,
-                d.Kind,
-                d.ContainingType,
-                filePath = d.Location.FilePath,
-                line = d.Location.Line
-            })
+            results = declarations
+                .GroupBy(d => d.Location.FilePath)
+                .Select(g => new
+                {
+                    file = g.Key,
+                    hits = g.Select(d => new
+                    {
+                        name = d.Name,
+                        kind = d.Kind,
+                        type = d.ContainingType,
+                        line = d.Location.Line
+                    })
+                })
         };
         Console.WriteLine(JsonSerializer.Serialize(result, BaseSettings.JsonOptions));
     }
@@ -82,25 +87,31 @@ sealed class FindDeclarationsCommand : Command<FindDeclarationsCommand.Settings>
             return;
         }
 
-        var table = new Table().Border(TableBorder.Rounded);
-        table.AddColumn(new TableColumn("[bold yellow]Name[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Location[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Container[/]"));
-
-        foreach (var d in declarations)
+        foreach (var group in declarations.GroupBy(d => d.Location.FilePath))
         {
-            var container = d.ContainingType is not null
-                ? $"[grey]in {Markup.Escape(d.ContainingType)}[/]"
-                : "";
+            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(group.Key)}[/]");
 
-            table.AddRow(
-                $"[white]{Markup.Escape(d.Name)}[/]",
-                $"[cyan]{Markup.Escape(d.Kind)}[/]",
-                $"{Markup.Escape(d.Location.FilePath)}:[bold]{d.Location.Line}[/]",
-                container);
+            var table = new Table().Border(TableBorder.None);
+            table.AddColumn(new TableColumn("[bold yellow]Name[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Line[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Container[/]"));
+
+            foreach (var d in group)
+            {
+                var container = d.ContainingType is not null
+                    ? $"[grey]in {Markup.Escape(d.ContainingType)}[/]"
+                    : "";
+
+                table.AddRow(
+                    $"[white]{Markup.Escape(d.Name)}[/]",
+                    $"[cyan]{Markup.Escape(d.Kind)}[/]",
+                    $"[bold]{d.Location.Line}[/]",
+                    container);
+            }
+
+            AnsiConsole.Write(table);
+            AnsiConsole.WriteLine();
         }
-
-        AnsiConsole.Write(table);
     }
 }

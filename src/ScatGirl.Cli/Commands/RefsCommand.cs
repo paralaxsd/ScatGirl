@@ -50,14 +50,16 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
             inFile     = settings.InFile,
             analysis   = "syntactic",
             count      = refs.Count,
-            references = refs.Select(r => new
-            {
-                r.FilePath,
-                r.Line,
-                r.Column,
-                r.LineText,
-                r.Kind
-            })
+            results    = refs.GroupBy(r => r.FilePath)
+                           .Select(g => new {
+                               file = g.Key,
+                               hits = g.Select(r => new {
+                                   line = r.Line,
+                                   col  = r.Column,
+                                   text = r.LineText,
+                                   kind = r.Kind
+                               })
+                           })
         };
         Console.WriteLine(JsonSerializer.Serialize(result, BaseSettings.JsonOptions));
     }
@@ -73,24 +75,28 @@ sealed class RefsCommand : Command<RefsCommand.Settings>
             return;
         }
 
-        var table = new Table().Border(TableBorder.None);
-        table.AddColumn(new TableColumn("[bold yellow]File[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Line[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Column[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Source[/]"));
-        table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
-
-        foreach (var r in refs)
+        foreach (var group in refs.GroupBy(r => r.FilePath))
         {
-            table.AddRow(
-                $"[blue]{Markup.Escape(r.FilePath)}[/]",
-                $"[bold]{r.Line}[/]",
-                $"[bold]{r.Column}[/]",
-                $"[dim]{Markup.Escape(r.LineText)}[/]",
-                $"[cyan]{Markup.Escape(r.Kind)}[/]"
-            );
-        }
+            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(group.Key)}[/]");
 
-        AnsiConsole.Write(table);
+            var table = new Table().Border(TableBorder.None);
+            table.AddColumn(new TableColumn("[bold yellow]Line[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Col[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Source[/]"));
+            table.AddColumn(new TableColumn("[bold yellow]Kind[/]"));
+
+            foreach (var r in group)
+            {
+                table.AddRow(
+                    $"[bold]{r.Line}[/]",
+                    $"[bold]{r.Column}[/]",
+                    $"[dim]{Markup.Escape(r.LineText)}[/]",
+                    $"[cyan]{Markup.Escape(r.Kind)}[/]"
+                );
+            }
+
+            AnsiConsole.Write(table);
+            AnsiConsole.WriteLine();
+        }
     }
 }

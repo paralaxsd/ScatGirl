@@ -52,13 +52,15 @@ sealed class MembersCommand : Command<MembersCommand.Settings>
             kind       = settings.Kind,
             inFile     = settings.InFile,
             count      = members.Count,
-            members    = members.Select(m => new
-            {
-                m.Kind,
-                m.Signature,
-                filePath = m.Location.FilePath,
-                line     = m.Location.Line
-            })
+            results    = members.GroupBy(m => m.Location.FilePath)
+                        .Select(g => new {
+                            file = g.Key,
+                            hits = g.Select(m => new {
+                                kind = m.Kind,
+                                sig  = m.Signature,
+                                line = m.Location.Line
+                            })
+                        })
         };
         Console.WriteLine(JsonSerializer.Serialize(result, BaseSettings.JsonOptions));
     }
@@ -73,30 +75,29 @@ sealed class MembersCommand : Command<MembersCommand.Settings>
             return;
         }
 
-        var multiFile = members.Select(m => m.Location.FilePath).Distinct().Count() > 1;
-
-        var grouped = members
-            .GroupBy(m => m.Kind)
-            .OrderBy(g => Array.IndexOf(KindOrder, g.Key) is var i && i >= 0 ? i : int.MaxValue);
-
-        foreach (var group in grouped)
+        foreach (var fileGroup in members.GroupBy(m => m.Location.FilePath))
         {
-            AnsiConsole.MarkupLine($"[cyan]{group.Key}s[/]");
+            AnsiConsole.MarkupLine($"[blue]{Markup.Escape(fileGroup.Key)}[/]");
 
-            var table = new Table().Border(TableBorder.None);
-            table.AddColumn(new TableColumn("[bold yellow]Signature[/]"));
-            table.AddColumn(new TableColumn("[bold yellow]Location[/]"));
+            var kindGroups = fileGroup
+                .GroupBy(m => m.Kind)
+                .OrderBy(g => Array.IndexOf(KindOrder, g.Key) is var i && i >= 0 ? i : int.MaxValue);
 
-            foreach (var m in group)
+            foreach (var group in kindGroups)
             {
-                var loc = multiFile
-                    ? $"[grey]{Markup.Escape(m.Location.FilePath)}[/]:[bold]{m.Location.Line}[/]"
-                    : $"[grey]:[/][bold]{m.Location.Line}[/]";
+                AnsiConsole.MarkupLine($"  [cyan]{group.Key}s[/]");
 
-                table.AddRow($"  {Markup.Escape(m.Signature)}", loc);
+                var table = new Table().Border(TableBorder.None);
+                table.AddColumn(new TableColumn("[bold yellow]Signature[/]"));
+                table.AddColumn(new TableColumn("[bold yellow]Line[/]"));
+
+                foreach (var m in group)
+                {
+                    table.AddRow($"    {Markup.Escape(m.Signature)}", $"[bold]{m.Location.Line}[/]");
+                }
+
+                AnsiConsole.Write(table);
             }
-
-            AnsiConsole.Write(table);
             AnsiConsole.WriteLine();
         }
     }
