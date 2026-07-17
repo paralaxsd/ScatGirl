@@ -11,7 +11,7 @@
     <PackageVersion Include="NuGet.Packaging" Version="7.6.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
     <!-- ScatGirl.Mcp -->
-    <PackageVersion Include="ModelContextProtocol" Version="1.4.0" />
+    <PackageVersion Include="ModelContextProtocol" Version="1.4.1" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.10" />
     <!-- ScatGirl.Build -->
     <PackageVersion Include="Nuke.Common" Version="10.1.0" />
