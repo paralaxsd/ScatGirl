@@ -1,10 +1,10 @@
 using System.Linq;
-using Nuke.Common;
-using Nuke.Common.CI.GitHubActions;
-using Nuke.Common.IO;
-using Nuke.Common.Tooling;
-using Nuke.Common.Tools.DotNet;
-using static Nuke.Common.Tools.DotNet.DotNetTasks;
+using Fallout.Common;
+using Fallout.Common.CI.GitHubActions;
+using Fallout.Common.IO;
+using Fallout.Common.Tooling;
+using Fallout.Common.Tools.DotNet;
+using static Fallout.Common.Tools.DotNet.DotNetTasks;
 // ReSharper disable UnusedMember.Local
 // ReSharper disable AllUnderscoreLocalParameterName
 
@@ -12,8 +12,8 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     GitHubActionsImage.UbuntuLatest,
     On = [GitHubActionsTrigger.Push, GitHubActionsTrigger.WorkflowDispatch],
     FetchDepth = 0,  // full history required for Nerdbank.GitVersioning
-    InvokedTargets = [nameof(Compile)])]
-class Build : NukeBuild
+    CacheKeyFiles = [], InvokedTargets = [nameof(Compile)])]
+class Build : FalloutBuild
 {
     /******************************************************************************************
      * FIELDS

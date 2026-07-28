@@ -3,6 +3,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [1.1.26] – 2026-07-28
+
+### Changed
+- **Build Tooling**: Migrated from Nuke to Fallout, the maintained community
+  fork, and ported build target definitions to the `Fallout.Common`
+  namespaces.
+
+### Dependencies
+- Updated `ModelContextProtocol`, `Microsoft.CodeAnalysis.CSharp`,
+  `Nerdbank.GitVersioning`, `Microsoft.Extensions.Hosting`,
+  `Microsoft.SourceLink.GitHub`, `NuGet.Packaging`,
+  `System.Security.Cryptography.Xml` and the .NET SDK to their latest
+  versions.
+
 ## [1.1.0] – 2026-05-11
 
 ### Added
