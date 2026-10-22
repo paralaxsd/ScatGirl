@@ -5,14 +5,14 @@
   <ItemGroup>
     <!-- ScatGirl.Core -->
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.6.0" />
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.400" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.401" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.10.94" />
     <!-- ScatGirl.Cli -->
     <PackageVersion Include="NuGet.Packaging" Version="7.9.0" />
     <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
     <!-- ScatGirl.Mcp -->
     <PackageVersion Include="ModelContextProtocol" Version="2.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.11" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
     <!-- ScatGirl.Build -->
     <PackageVersion Include="Fallout.Common" Version="10.4.0" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="10.0.10" />
