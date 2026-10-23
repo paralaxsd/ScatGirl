@@ -9,7 +9,7 @@
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.10.94" />
     <!-- ScatGirl.Cli -->
     <PackageVersion Include="NuGet.Packaging" Version="7.9.0" />
-    <PackageVersion Include="Spectre.Console.Cli" Version="0.55.0" />
+    <PackageVersion Include="Spectre.Console.Cli" Version="0.57.2" />
     <!-- ScatGirl.Mcp -->
     <PackageVersion Include="ModelContextProtocol" Version="2.2.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
